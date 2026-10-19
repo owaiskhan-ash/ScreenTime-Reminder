@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - 'arena/**'
 
 permissions:
   contents: write
@@ -31,7 +32,17 @@ jobs:
       - name: Build debug APK
         run: |
           chmod +x ./gradlew
-          ./gradlew assembleDebug --no-daemon
+          set +e
+          ./gradlew assembleDebug --no-daemon > build.log 2>&1
+          status=$?
+          if [ $status -ne 0 ]; then
+            echo "::error::Gradle build failed (exit $status)"
+            grep -E "^e: |error:|Unresolved reference|FAILURE:|What went wrong|Caused by:" build.log | head -20 | while IFS= read -r line; do
+              echo "::error::$line"
+            done
+            tail -30 build.log
+            exit $status
+          fi
 
       - name: Name the APK
         run: cp app/build/outputs/apk/debug/app-debug.apk ScreenTimeReminder.apk
