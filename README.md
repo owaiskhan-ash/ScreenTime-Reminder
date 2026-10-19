@@ -44,7 +44,10 @@ It reads only *which app was in front and for how long*. Never content, messages
 
 ## Install
 
-Download the latest APK from the **[apk-latest release](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/apk-latest)** and open it on the phone.
+Download the APK from the **[v1 release](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/v1)** or the rolling **[apk-latest release](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/apk-latest)** and open it on the phone.
+
+Direct download (v1): `https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/download/v1/ScreenTimeReminder.apk`
+Direct download (latest): `https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/download/apk-latest/ScreenTimeReminder.apk`
 
 On first run, allow **Usage access** (Android opens the settings page) and **notifications**. Android requires these for any app to read screen time or send reminders.
 
