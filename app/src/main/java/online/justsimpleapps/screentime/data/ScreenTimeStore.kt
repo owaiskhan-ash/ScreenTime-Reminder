@@ -383,8 +383,6 @@ class ScreenTimeStore private constructor(context: Context) {
         UsageRepository.get(appContext).invalidate()
         refresh(now, tickSession = false)
     }
-
-    fun appContext(): Context = appContext
 }
 
 data class HistoryEntry(val minutes: Long, val breaks: Int)

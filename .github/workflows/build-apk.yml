@@ -29,6 +29,11 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-35 build-tools;35.0.0 platform-tools'
+
+      - name: Accept SDK licenses
+        run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -65,4 +70,3 @@ jobs:
             This build is signed with a debug key, suitable for direct sideloading.
           files: ScreenTimeReminder.apk
           make_latest: true
-          overwrite_files: true
