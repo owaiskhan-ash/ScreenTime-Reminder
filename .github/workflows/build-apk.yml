@@ -11,24 +11,19 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out
         uses: actions/checkout@v4
 
-      - name: Set up Java
-        uses: actions/setup-java@v5
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-        with:
-          packages: 'platforms;android-35 build-tools;35.0.0 platform-tools'
-
-      - name: Accept SDK licenses
-        run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -36,7 +31,7 @@ jobs:
       - name: Build debug APK
         run: |
           chmod +x ./gradlew
-          ./gradlew assembleDebug --stacktrace --no-daemon
+          ./gradlew assembleDebug --no-daemon
 
       - name: Name the APK
         run: cp app/build/outputs/apk/debug/app-debug.apk ScreenTimeReminder.apk
@@ -62,6 +57,5 @@ jobs:
             - Free. No ads. No tracking. No account.
 
             **Install:** download the APK, open it, and allow installs from this source if Android asks.
-            This build is signed with a debug key, suitable for direct sideloading.
           files: ScreenTimeReminder.apk
           make_latest: true
