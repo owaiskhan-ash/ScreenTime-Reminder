@@ -227,16 +227,13 @@ class ScreenTimeStore private constructor(context: Context) {
         }
         val total = if (accessGranted) maxOf(usage.todayMs, 0L) else continuous
         recordTodayTotal(now, total)
-        history = loadHistory()
 
         val s = settings
         val limitMs = minutesToMs(s.sessionMinutes)
         val dailyLimitMs = if (s.dailyLimitMinutes > 0) minutesToMs(s.dailyLimitMinutes) else 0L
         val sessionActive = session.sessionStart > 0L
-        val due = s.remindersEnabled && sessionActive && (
-            (session.nextReminderAt > 0L && session.nextReminderAt <= now) ||
-                (session.nextReminderAt == 0L && session.reminderFired)
-            )
+        val due = s.remindersEnabled && sessionActive &&
+            session.nextReminderAt > 0L && session.nextReminderAt <= now
         val nextIn = when {
             !s.remindersEnabled || !sessionActive -> 0L
             session.nextReminderAt > now -> session.nextReminderAt - now
