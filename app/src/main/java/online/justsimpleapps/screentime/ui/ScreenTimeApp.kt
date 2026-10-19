@@ -35,7 +35,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import online.justsimpleapps.screentime.data.ScreenTimeStore
 import online.justsimpleapps.screentime.data.SessionEngine
 import online.justsimpleapps.screentime.notifications.Notifiers
@@ -64,7 +66,9 @@ fun ScreenTimeApp(
         LaunchedEffect(owner) {
             owner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 while (true) {
-                    store.refresh(System.currentTimeMillis(), tickSession = true)
+                    withContext(Dispatchers.IO) {
+                        store.refresh(System.currentTimeMillis(), tickSession = true)
+                    }
                     delay(1000L)
                 }
             }
