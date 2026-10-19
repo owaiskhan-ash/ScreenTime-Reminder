@@ -96,7 +96,7 @@ class ScreenTimeService : Service() {
             }
             val limit = settings.dailyLimitMinutes
             if (limit > 0 && total >= minutesToMs(limit) && !store.limitNotifiedToday()) {
-                Notifiers.postLimit(this, settings, total)
+                Notifiers.postDailyLimit(this, settings, total)
                 store.markLimitNotified()
             }
         }
