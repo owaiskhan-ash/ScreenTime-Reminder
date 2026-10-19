@@ -59,9 +59,9 @@ On first run, allow **Usage access** (Android opens the settings page) and **not
 
 The APK lands in `app/build/outputs/apk/debug/`. Requires JDK 17 and the Android SDK (compileSdk 35).
 
-GitHub Actions builds it on pushes to `main` (or on demand via **Actions → Build APK → Run workflow**) and attaches the APK to the rolling `apk-latest` release.
+GitHub Actions builds it on every push to `main` (or on demand via **Actions → Build APK → Run workflow**) and attaches the freshly built APK to the rolling [`apk-latest`](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/apk-latest) release.
 
-> The first CI runs on this repo sat in GitHub's queue — every job failed during runner setup, before the first step, which is a GitHub-side provisioning issue rather than a build error. Re-running the workflow from the Actions tab builds the APK; the source has been checked with the Kotlin compiler for syntax and internal-reference errors.
+> Build verified in CI: `./gradlew assembleDebug` completes and the 8.9 MB APK is published to `apk-latest`.
 
 ## Design preview
 
