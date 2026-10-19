@@ -1,0 +1,68 @@
+name: Build APK
+
+on:
+  push:
+    branches:
+      - main
+      - 'arena/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build debug APK
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --stacktrace --no-daemon
+
+      - name: Name the APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk ScreenTimeReminder.apk
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ScreenTimeReminder-apk
+          path: ScreenTimeReminder.apk
+          if-no-files-found: error
+
+      - name: Publish rolling release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-latest
+          name: Screen Time Reminder — latest build
+          body: |
+            The latest installable build of **Screen Time Reminder** by Just Simple Apps.
+
+            - Live screen time read from the phone's own usage record
+            - Calm break reminders during long sessions
+            - Daily limit, weekly history, top apps
+            - Free. No ads. No tracking. No account.
+
+            **Install:** download the APK, open it, and allow installs from this source if Android asks.
+            This build is signed with a debug key, suitable for direct sideloading.
+          files: ScreenTimeReminder.apk
+          make_latest: true
+          overwrite_files: true
