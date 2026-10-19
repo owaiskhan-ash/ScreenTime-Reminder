@@ -47,6 +47,29 @@ jobs:
             exit $status
           fi
 
+      - name: Report build failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -f build.log ]; then
+            tail -c 50000 build.log > failure.txt
+          else
+            echo "no build.log produced" > failure.txt
+          fi
+          python3 - <<'EOF'
+          import json, os, subprocess
+          body = open('failure.txt', encoding='utf-8', errors='replace').read()
+          body = "Automated build failure report\n\n```\n" + body + "\n```"
+          payload = json.dumps({"body": body[:60000]})
+          open('payload.json', 'w').write(payload)
+          subprocess.run([
+              'gh', 'api',
+              f"repos/{os.environ['GITHUB_REPOSITORY']}/commits/{os.environ['GITHUB_SHA']}/comments",
+              '--input', 'payload.json'
+          ], check=False)
+          EOF
+
       - name: Name the APK
         run: cp app/build/outputs/apk/debug/app-debug.apk ScreenTimeReminder.apk
 
