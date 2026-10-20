@@ -51,6 +51,21 @@ Direct download (latest): `https://github.com/owaiskhan-ash/ScreenTime-Reminder/
 
 On first run, allow **Usage access** (Android opens the settings page) and **notifications**. Android requires these for any app to read screen time or send reminders.
 
+### If access is blocked — “personal and financial data at risk” / greyed-out toggle
+
+On Android 13+ (Samsung, Pixel, OnePlus, Xiaomi), apps you install from a file (side-load, not Play Store) are put under **Restricted Settings**. The system then blocks the Usage Access toggle with a scary generic warning — even though this app has **no internet permission** and never sends data anywhere; it only reads *which app was in front and for how long*.
+
+**Fix (15 seconds):**
+
+1. Open **Settings → Apps → Screen Time Reminder** (or long-press the app icon → App info)
+2. Tap the **⋮ three-dot menu** at the top-right → **Allow restricted settings** → confirm
+3. Go back and tap **Allow screen time access** again (or in the app: **Settings → Screen time access → OPEN ACCESS SETTINGS**)
+4. Find **Screen Time Reminder** in the list and toggle it **ON** → Allow
+
+> Samsung: Apps → ⋮ → Special access → Usage access. Pixel: same. Xiaomi/Realme: Settings → Apps → ⋮ → Allow restricted settings, then enable usage access. If you still see a grey toggle, repeat step 2 — restricted settings must be allowed *before* the toggle works.
+
+You only do this once. The app now shows **LIMITED MODE → LIVE** and your real Today / TOP APPS / RHYTHM fill in.
+
 ## Build
 
 ```bash

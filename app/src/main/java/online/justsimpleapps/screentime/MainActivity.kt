@@ -15,6 +15,7 @@ import online.justsimpleapps.screentime.data.ScreenTimeStore
 import online.justsimpleapps.screentime.notifications.Notifiers
 import online.justsimpleapps.screentime.service.Monitor
 import online.justsimpleapps.screentime.ui.ScreenTimeApp
+import online.justsimpleapps.screentime.util.openAppInfo
 import online.justsimpleapps.screentime.util.openNotificationSettings
 import online.justsimpleapps.screentime.util.openUsageAccessSettings
 
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() {
                 store = store,
                 onRequestNotifications = { requestNotifications(auto = true) },
                 onOpenAccessSettings = { openUsageAccessSettings(this) },
+                onOpenAppInfo = { openAppInfo(this) },
                 onOpenNotificationSettings = { requestNotifications(auto = false) },
                 onOpenWebsite = { openWebsite() }
             )
