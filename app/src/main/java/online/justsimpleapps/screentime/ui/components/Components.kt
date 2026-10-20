@@ -685,3 +685,54 @@ fun AccessNoticeCard(onOpenAccess: () -> Unit, modifier: Modifier = Modifier) {
         TextAction("OPEN ACCESS SETTINGS", onOpenAccess)
     }
 }
+
+@Composable
+fun RestrictedSettingsCard(
+    onOpenAppInfo: () -> Unit,
+    onOpenAccess: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val p = LocalPalette.current
+    Column(
+        modifier
+            .fillMaxWidth()
+            .border(1.dp, p.line, RoundedCornerShape(3.dp))
+            .background(p.subtle)
+            .padding(18.dp)
+    ) {
+        Label("IF ANDROID BLOCKS THE TOGGLE", color = p.fg, size = 9.sp)
+        Spacer(Modifier.height(9.dp))
+        Body(
+            "Android 13+ blocks usage access for apps you installed from a file (not Play Store). " +
+                "That warning — \"personal and financial data at risk\" — is generic, even for screen-time. " +
+                "Our app has no internet permission and cannot send anything anywhere; it only reads \"which app was in front and for how long.\"",
+            size = 11.sp,
+            lineHeight = 17.sp
+        )
+        Spacer(Modifier.height(10.dp))
+        Body(
+            "Fix in 15 seconds:",
+            size = 11.sp,
+            lineHeight = 17.sp,
+            color = p.fg,
+            weight = androidx.compose.ui.text.font.FontWeight.Medium
+        )
+        Spacer(Modifier.height(6.dp))
+        Body(
+            "1) Tap OPEN APP INFO below → 2) Tap the 3-dot menu (top-right) → 3) Allow restricted settings → 4) Go back → OPEN ACCESS SETTINGS → toggle Screen Time Reminder ON.",
+            size = 11.sp,
+            lineHeight = 17.sp
+        )
+        Spacer(Modifier.height(14.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            GhostButton(text = "Open app info", onClick = onOpenAppInfo, modifier = Modifier.weight(1f))
+            PrimaryButton(text = "Open access", onClick = onOpenAccess, modifier = Modifier.weight(1f))
+        }
+        Spacer(Modifier.height(8.dp))
+        Label(
+            "Path: Settings → Apps → Screen Time Reminder → ⋮ → Allow restricted settings",
+            size = 7.5.sp,
+            color = p.faint
+        )
+    }
+}

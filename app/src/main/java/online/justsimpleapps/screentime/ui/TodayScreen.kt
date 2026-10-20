@@ -18,6 +18,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +42,7 @@ import online.justsimpleapps.screentime.ui.components.HourlyChart
 import online.justsimpleapps.screentime.ui.components.Label
 import online.justsimpleapps.screentime.ui.components.Mono
 import online.justsimpleapps.screentime.ui.components.ProgressBar
+import online.justsimpleapps.screentime.ui.components.RestrictedSettingsCard
 import online.justsimpleapps.screentime.ui.components.SectionHeader
 import online.justsimpleapps.screentime.ui.components.StatCell
 import online.justsimpleapps.screentime.ui.components.TopBar
@@ -54,12 +59,14 @@ import kotlin.math.roundToInt
 fun TodayScreen(
     store: ScreenTimeStore,
     onOpenBreak: () -> Unit,
-    onOpenAccessSettings: () -> Unit
+    onOpenAccessSettings: () -> Unit,
+    onOpenAppInfo: () -> Unit = {}
 ) {
     val p = LocalPalette.current
     val s = store.snapshot
     val settings = store.settings
     val hour = LocalTime.now().hour
+    var showRestrictedHelp by remember { mutableStateOf(false) }
 
     Column(Modifier.fillMaxSize()) {
         TopBar(
@@ -117,6 +124,12 @@ fun TodayScreen(
                 Spacer(Modifier.height(16.dp))
                 if (s.limitedMode) {
                     AccessNoticeCard(onOpenAccessSettings)
+                    Spacer(Modifier.height(10.dp))
+                    GhostButton(text = if (showRestrictedHelp) "Hide blocked-toggle help" else "Toggle greyed out? Fix it", onClick = { showRestrictedHelp = !showRestrictedHelp })
+                    if (showRestrictedHelp) {
+                        Spacer(Modifier.height(10.dp))
+                        RestrictedSettingsCard(onOpenAppInfo = onOpenAppInfo, onOpenAccess = onOpenAccessSettings)
+                    }
                 } else {
                     HourlyChart(hourly = s.hourlyMinutes, highlightHour = hour)
                     Spacer(Modifier.height(12.dp))

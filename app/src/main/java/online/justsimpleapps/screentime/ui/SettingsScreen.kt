@@ -36,6 +36,7 @@ import online.justsimpleapps.screentime.ui.components.Hairline
 import online.justsimpleapps.screentime.ui.components.Headline
 import online.justsimpleapps.screentime.ui.components.Label
 import online.justsimpleapps.screentime.ui.components.PrimaryButton
+import online.justsimpleapps.screentime.ui.components.RestrictedSettingsCard
 import online.justsimpleapps.screentime.ui.components.SectionLabel
 import online.justsimpleapps.screentime.ui.components.Segmented
 import online.justsimpleapps.screentime.ui.components.SettingsRow
@@ -48,6 +49,7 @@ import online.justsimpleapps.screentime.ui.theme.LocalPalette
 fun SettingsScreen(
     store: ScreenTimeStore,
     onOpenAccess: () -> Unit,
+    onOpenAppInfo: () -> Unit = {},
     onOpenNotifications: () -> Unit,
     onSendTest: () -> Unit,
     onSettingsChanged: () -> Unit,
@@ -57,6 +59,7 @@ fun SettingsScreen(
     val settings = store.settings
     val snapshot = store.snapshot
     var showReset by remember { mutableStateOf(false) }
+    var showRestrictedHelp by remember { mutableStateOf(false) }
 
     val sessionOptions = listOf(30, 45, 60, 90)
     val dailyOptions = listOf(120, 180, 300, 360, 0)
@@ -198,6 +201,18 @@ fun SettingsScreen(
                     accent = if (store.accessGranted) p.fg else p.muted,
                     onClick = onOpenAccess
                 )
+                if (!store.accessGranted) {
+                    Spacer(Modifier.height(8.dp))
+                    GhostButton(
+                        text = if (showRestrictedHelp) "Hide blocked-toggle help" else "Toggle blocked or greyed out?",
+                        onClick = { showRestrictedHelp = !showRestrictedHelp }
+                    )
+                    if (showRestrictedHelp) {
+                        Spacer(Modifier.height(12.dp))
+                        RestrictedSettingsCard(onOpenAppInfo = onOpenAppInfo, onOpenAccess = onOpenAccess)
+                    }
+                    Spacer(Modifier.height(8.dp))
+                }
                 Hairline()
                 SettingsRow(
                     title = "Notifications",

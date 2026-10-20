@@ -51,6 +51,7 @@ fun ScreenTimeApp(
     store: ScreenTimeStore,
     onRequestNotifications: () -> Unit,
     onOpenAccessSettings: () -> Unit,
+    onOpenAppInfo: () -> Unit = {},
     onOpenNotificationSettings: () -> Unit,
     onOpenWebsite: () -> Unit
 ) {
@@ -115,6 +116,7 @@ fun ScreenTimeApp(
                 OnboardingScreen(
                     store = store,
                     onAllowAccess = onOpenAccessSettings,
+                    onOpenAppInfo = onOpenAppInfo,
                     onDone = {
                         store.completeOnboarding()
                         store.refresh()
@@ -131,12 +133,14 @@ fun ScreenTimeApp(
                             0 -> TodayScreen(
                                 store = store,
                                 onOpenBreak = { showBreak = true },
-                                onOpenAccessSettings = onOpenAccessSettings
+                                onOpenAccessSettings = onOpenAccessSettings,
+                                onOpenAppInfo = onOpenAppInfo
                             )
                             1 -> InsightsScreen(store = store)
                             else -> SettingsScreen(
                                 store = store,
                                 onOpenAccess = onOpenAccessSettings,
+                                onOpenAppInfo = onOpenAppInfo,
                                 onOpenNotifications = onOpenNotificationSettings,
                                 onSendTest = { Notifiers.postTest(context, store.settings) },
                                 onSettingsChanged = { Monitor.sync(context) },

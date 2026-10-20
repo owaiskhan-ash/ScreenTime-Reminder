@@ -18,6 +18,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,16 +36,19 @@ import online.justsimpleapps.screentime.ui.components.Headline
 import online.justsimpleapps.screentime.ui.components.Label
 import online.justsimpleapps.screentime.ui.components.Mono
 import online.justsimpleapps.screentime.ui.components.PrimaryButton
+import online.justsimpleapps.screentime.ui.components.RestrictedSettingsCard
 import online.justsimpleapps.screentime.ui.theme.LocalPalette
 
 @Composable
 fun OnboardingScreen(
     store: ScreenTimeStore,
     onAllowAccess: () -> Unit,
+    onOpenAppInfo: () -> Unit = {},
     onDone: () -> Unit
 ) {
     val p = LocalPalette.current
     val granted = store.accessGranted
+    var showRestrictedHelp by remember { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -104,6 +111,12 @@ fun OnboardingScreen(
                     size = 11.sp,
                     lineHeight = 16.sp
                 )
+                Spacer(Modifier.height(10.dp))
+                GhostButton(text = if (showRestrictedHelp) "Hide help" else "Access denied? Blocked toggle help", onClick = { showRestrictedHelp = !showRestrictedHelp })
+                if (showRestrictedHelp) {
+                    Spacer(Modifier.height(12.dp))
+                    RestrictedSettingsCard(onOpenAppInfo = onOpenAppInfo, onOpenAccess = onAllowAccess)
+                }
             }
             Spacer(Modifier.height(36.dp))
             Label("NO ADS · NO TRACKING · NO ACCOUNT", color = p.faint, size = 8.5.sp)
