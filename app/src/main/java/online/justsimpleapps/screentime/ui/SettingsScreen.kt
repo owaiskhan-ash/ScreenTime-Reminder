@@ -268,7 +268,7 @@ fun SettingsScreen(
                             fontWeight = FontWeight.Medium
                         )
                         Spacer(Modifier.height(3.dp))
-                        Label("VERSION 1.0.0 · ANDROID", size = 8.5.sp)
+                        Label("VERSION 1.1.0 · ANDROID", size = 8.5.sp)
                     }
                 }
                 Spacer(Modifier.height(14.dp))

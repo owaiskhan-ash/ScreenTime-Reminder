@@ -515,7 +515,7 @@
             ${MARK}
             <div>
               <div class="name">Screen Time Reminder</div>
-              <div class="ver">VERSION 1.0.0 · ANDROID</div>
+              <div class="ver">VERSION 1.1.0 · ANDROID</div>
             </div>
           </div>
           <p class="about-copy">Free to use. No ads, no tracking, no account. Screen-time numbers, settings and daily totals stay on this phone.</p>

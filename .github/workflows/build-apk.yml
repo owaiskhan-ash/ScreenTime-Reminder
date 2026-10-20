@@ -97,13 +97,17 @@ jobs:
             - Free. No ads. No tracking. No account.
 
             **Install:** download the APK, open it, and allow installs from this source if Android asks.
-          files: ScreenTimeReminder.apk
+          files: |
+            ScreenTimeReminder.apk
+            docs/icon.png
           make_latest: true
 
       - name: Publish versioned release (tag)
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: ScreenTimeReminder.apk
+          files: |
+            ScreenTimeReminder.apk
+            docs/icon.png
           generate_release_notes: true
           make_latest: true

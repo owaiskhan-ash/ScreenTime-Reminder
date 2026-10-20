@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/icon.png" width="96" height="96" alt="Screen Time Reminder ST app icon" />
+
 # Screen Time Reminder
 
 **A live count of the time you spend looking — and one calm nudge to step away.**
@@ -44,8 +46,9 @@ It reads only *which app was in front and for how long*. Never content, messages
 
 ## Install
 
-Download the APK from the **[v1 release](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/v1)** or the rolling **[apk-latest release](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/apk-latest)** and open it on the phone.
+Download the APK from the **[v1.1.0 release](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/v1.1.0)** (or **[v1](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/v1)** / rolling **[apk-latest](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/apk-latest)**) and open it on the phone.
 
+Direct download (v1.1.0): `https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/download/v1.1.0/ScreenTimeReminder.apk`
 Direct download (v1): `https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/download/v1/ScreenTimeReminder.apk`
 Direct download (latest): `https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/download/apk-latest/ScreenTimeReminder.apk`
 
