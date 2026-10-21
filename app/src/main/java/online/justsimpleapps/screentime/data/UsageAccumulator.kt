@@ -28,7 +28,7 @@ class UsageAccumulator(
     private var front: String? = null
     private var spanStart = windowStart
 
-    private var clusterStart = 0L
+    private var clusterStart = NO_CLUSTER
     private var lastUseEnd = 0L
 
     private val hours = FloatArray(24)
@@ -123,7 +123,7 @@ class UsageAccumulator(
             addHours(from, to)
             val pkg = front
             if (pkg != null) perApp[pkg] = (perApp[pkg] ?: 0L) + accrued
-            if (clusterStart == 0L || from - lastUseEnd >= awayResetMs) {
+            if (clusterStart == NO_CLUSTER || from - lastUseEnd >= awayResetMs) {
                 clusterStart = from
             }
             lastUseEnd = to
@@ -144,5 +144,10 @@ class UsageAccumulator(
             hours[zoned.hour] += (end - cursor) / 60_000f
             cursor = end
         }
+    }
+
+    private companion object {
+        /** "No session open". Never a real timestamp, so clusters may start at 0. */
+        const val NO_CLUSTER = Long.MIN_VALUE
     }
 }
