@@ -18,7 +18,7 @@ Free · No ads · No tracking · No account
 
 ## What it does
 
-- **Live screen time.** Reads the phone's own usage record — the same numbers Android's Digital Wellbeing shows — and updates every second while the app is open.
+- **Live screen time.** Counts only while the screen is actually on and unlocked — the same numbers Android's Digital Wellbeing shows — and updates every second while the app is open. Background playback with the screen off (YouTube audio, music, downloads) is never counted.
 - **Break reminders.** After a continuous session of 30, 45, 60 or 90 minutes, one notification asks you to look up. Snooze it for 15 minutes or start a five-minute break.
 - **Continuous, not cumulative.** Two minutes away from the phone resets the session. The app nudges on *unbroken* screen time, not just total minutes.
 - **Daily limit.** A second, firmer reminder when the day's total passes 2h / 3h / 5h / 6h.
@@ -37,7 +37,8 @@ It reads only *which app was in front and for how long*. Never content, messages
 
 | Piece | Role |
 | --- | --- |
-| `data/UsageRepository.kt` | Queries `UsageStatsManager` for today's foreground time, hourly buckets, unlocks and the app in front right now. 15–20 s cache, with a screen-on live delta between polls. |
+| `data/UsageRepository.kt` | Rebuilds today from the phone's usage **event** stream, crediting an app only while the screen is on and unlocked — so time with the screen off is never counted. Hourly buckets, unlocks, top apps and the app in front right now. 15 s cache, with a screen-on live delta between polls. |
+| `data/UsageAccumulator.kt` | The counting rules as pure Kotlin: an app earns time only while the screen is on, unlocked and in front. Unit-tested — this is what keeps screen-off playback out of the total. |
 | `data/SessionEngine.kt` | Decides when a continuous session earns a nudge. Two minutes away resets it. Shared by the UI and the background monitor so both always agree. |
 | `data/ScreenTimeStore.kt` | Settings, today's counters and 30 days of daily history. Compose state, so every screen follows along. |
 | `service/ScreenTimeService.kt` | A low-priority foreground service that checks every 20 seconds and posts reminders in the background. |
@@ -46,9 +47,9 @@ It reads only *which app was in front and for how long*. Never content, messages
 
 ## Install
 
-Download the APK from the **[v1.1.0 release](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/v1.1.0)** (or **[v1](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/v1)** / rolling **[apk-latest](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/apk-latest)**) and open it on the phone.
+Download the APK from the **[v1.1.1 release](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/v1.1.1)** (or **[v1](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/v1)** / rolling **[apk-latest](https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/tag/apk-latest)**) and open it on the phone.
 
-Direct download (v1.1.0): `https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/download/v1.1.0/ScreenTimeReminder.apk`
+Direct download (v1.1.1): `https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/download/v1.1.1/ScreenTimeReminder.apk`
 Direct download (v1): `https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/download/v1/ScreenTimeReminder.apk`
 Direct download (latest): `https://github.com/owaiskhan-ash/ScreenTime-Reminder/releases/download/apk-latest/ScreenTimeReminder.apk`
 

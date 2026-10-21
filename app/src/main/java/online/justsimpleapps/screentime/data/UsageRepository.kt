@@ -10,21 +10,6 @@ import online.justsimpleapps.screentime.util.startOfTodayMs
 import java.time.Instant
 import java.time.ZoneId
 
-data class Aggregate(
-    val totalMs: Long = 0L,
-    val topApps: List<AppUsage> = emptyList(),
-    val at: Long = 0L
-)
-
-data class Timeline(
-    val hourly: List<Float> = List(24) { 0f },
-    val unlocks: Int = 0,
-    val firstUseMs: Long = 0L,
-    val maxSessionMs: Long = 0L,
-    val lastActivityAt: Long = 0L,
-    val activeNow: Boolean = false
-)
-
 data class UsageData(
     val todayMs: Long = 0L,
     val hourly: List<Float> = List(24) { 0f },
@@ -38,9 +23,12 @@ data class UsageData(
 /**
  * Reads the phone's own screen-time record. Nothing leaves the device.
  *
- * Screen time comes from UsageStatsManager: the same numbers Android's
- * Digital Wellbeing uses. We never read content, messages or app data —
- * only which app was in front, and for how long.
+ * The day is rebuilt from the usage *event* stream — the same source
+ * Android's Digital Wellbeing uses — and an app is credited only while the
+ * screen is actually on and unlocked. Time with the screen off (background
+ * playback, notifications arriving in the dark) counts for zero. We never
+ * read content, messages or app data — only which app was in front, and
+ * for how long the screen was on.
  */
 class UsageRepository private constructor(private val context: Context) {
 
@@ -57,15 +45,23 @@ class UsageRepository private constructor(private val context: Context) {
     private val labels = HashMap<String, String>()
 
     private var cacheDay: String = ""
-    private var aggregate: Aggregate = Aggregate()
-    private var aggregateAt = 0L
-    private var timeline: Timeline = Timeline()
-    private var timelineAt = 0L
+    private var cached: Cached = Cached()
+    private val cacheTtl = 15_000L
 
-    private val aggregateTtl = 15_000L
-    private val timelineTtl = 20_000L
+    private class Cached(
+        val data: UsageData = UsageData(),
+        val accruingNow: Boolean = false,
+        val at: Long = 0L
+    )
 
     companion object {
+        /**
+         * How far before midnight the event walk starts, so a session that
+         * crosses midnight keeps its state (screen off? which app in front?)
+         * instead of starting the day blind.
+         */
+        private const val SEED_WINDOW_MS = 12 * 60 * 60_000L
+
         @Volatile
         private var instance: UsageRepository? = null
 
@@ -81,36 +77,21 @@ class UsageRepository private constructor(private val context: Context) {
     fun invalidate() {
         synchronized(lock) {
             cacheDay = ""
-            aggregateAt = 0L
-            timelineAt = 0L
+            cached = Cached()
         }
     }
 
     fun snapshot(now: Long): UsageData = synchronized(lock) {
-        val day = LocalDay.key(now)
-        if (day != cacheDay) {
-            cacheDay = day
-            aggregate = Aggregate()
-            aggregateAt = 0L
-            timeline = Timeline()
-            timelineAt = 0L
-        }
         expireIfNeeded(now)
-        val total = aggregate.totalMs + liveDelta(now)
-        UsageData(
-            todayMs = total.coerceIn(0L, (now - startOfTodayMs()).coerceAtLeast(0L)),
-            hourly = timeline.hourly,
-            topApps = aggregate.topApps,
-            unlocks = timeline.unlocks,
-            firstUseMs = timeline.firstUseMs,
-            maxSessionMs = timeline.maxSessionMs,
-            activeNow = timeline.activeNow || isScreenOn()
-        )
+        val c = cached
+        val total = (c.data.todayMs + liveDelta(now))
+            .coerceIn(0L, (now - startOfTodayMs()).coerceAtLeast(0L))
+        c.data.copy(todayMs = total)
     }
 
     fun todayMs(now: Long): Long = synchronized(lock) {
         expireIfNeeded(now)
-        (aggregate.totalMs + liveDelta(now)).coerceAtLeast(0L)
+        (cached.data.todayMs + liveDelta(now)).coerceAtLeast(0L)
     }
 
     /** Which app is in front right now? Used by the monitor. */
@@ -125,9 +106,10 @@ class UsageRepository private constructor(private val context: Context) {
             when (event.eventType) {
                 UsageEvents.Event.MOVE_TO_FOREGROUND -> {
                     val pkg = event.packageName ?: continue
-                    if (!isNoise(pkg, forTotals = false)) last = pkg
+                    last = pkg
                 }
-                UsageEvents.Event.MOVE_TO_BACKGROUND -> {
+                UsageEvents.Event.MOVE_TO_BACKGROUND,
+                UsageEvents.Event.ACTIVITY_STOPPED -> {
                     if (event.packageName == last) last = null
                 }
                 UsageEvents.Event.SCREEN_NON_INTERACTIVE,
@@ -139,38 +121,91 @@ class UsageRepository private constructor(private val context: Context) {
     }
 
     private fun expireIfNeeded(now: Long) {
-        if (now - aggregateAt > aggregateTtl || aggregateAt == 0L) {
-            aggregate = queryAggregate(now)
-            aggregateAt = now
+        val day = LocalDay.key(now)
+        if (day != cacheDay) {
+            cacheDay = day
+            cached = Cached()
         }
-        if (now - timelineAt > timelineTtl || timelineAt == 0L) {
-            timeline = queryTimeline(now)
-            timelineAt = now
+        val c = cached
+        if (c.at == 0L || now - c.at > cacheTtl) {
+            cached = queryUsage(now)
         }
     }
 
-    /** Between the 15-second aggregate polls, screen-on time keeps ticking. */
+    /** Between the 15-second polls, screen-on time keeps ticking. */
     private fun liveDelta(now: Long): Long {
-        if (aggregateAt == 0L) return 0L
-        val elapsed = now - aggregateAt
+        val c = cached
+        if (c.at == 0L) return 0L
+        val elapsed = now - c.at
         if (elapsed <= 0L || elapsed > 120_000L) return 0L
-        if (!isScreenOn()) return 0L
+        if (!c.accruingNow || !isScreenOn()) return 0L
         return elapsed
     }
 
-    private fun queryAggregate(now: Long): Aggregate {
-        val manager = usm ?: return Aggregate(at = now)
+    private fun queryUsage(now: Long): Cached {
+        val manager = usm ?: return Cached(at = now)
         val start = startOfTodayMs()
+        val events = runCatching { manager.queryEvents(start - SEED_WINDOW_MS, now) }.getOrNull()
+            ?: return fallbackUsage(manager, start, now)
+
+        val acc = UsageAccumulator(windowStart = start)
+        var firstUse = 0L
+        val event = UsageEvents.Event()
+        while (events.hasNextEvent()) {
+            events.getNextEvent(event)
+            val ts = event.timeStamp
+            when (event.eventType) {
+                UsageEvents.Event.MOVE_TO_FOREGROUND -> {
+                    val pkg = event.packageName ?: continue
+                    if (firstUse == 0L && ts >= start && !isNoise(pkg)) firstUse = ts
+                    acc.onForeground(pkg, ts)
+                }
+                UsageEvents.Event.MOVE_TO_BACKGROUND -> acc.onBackground(event.packageName, ts)
+                UsageEvents.Event.ACTIVITY_STOPPED -> acc.onBackground(event.packageName, ts)
+                UsageEvents.Event.SCREEN_INTERACTIVE -> acc.onScreenInteractive(ts)
+                UsageEvents.Event.SCREEN_NON_INTERACTIVE -> acc.onScreenOff(ts)
+                UsageEvents.Event.KEYGUARD_SHOWN -> acc.onKeyguardShown(ts)
+                UsageEvents.Event.KEYGUARD_HIDDEN -> acc.onKeyguardHidden(ts)
+                UsageEvents.Event.DEVICE_SHUTDOWN -> acc.onShutdown(ts)
+                UsageEvents.Event.DEVICE_STARTUP -> acc.onStartup(ts)
+            }
+        }
+        acc.finish(now)
+
+        val top = acc.perAppMs.asSequence()
+            .filterNot { isNoise(it.key) }
+            .sortedByDescending { it.value }
+            .take(5)
+            .map { (pkg, ms) -> AppUsage(pkg, labelFor(pkg), ms) }
+            .toList()
+
+        val data = UsageData(
+            todayMs = acc.totalMs,
+            hourly = acc.hourlyMinutes(),
+            topApps = top,
+            unlocks = acc.unlocks,
+            firstUseMs = firstUse,
+            maxSessionMs = acc.maxSessionMs,
+            activeNow = acc.isAccruing
+        )
+        return Cached(data = data, accruingNow = acc.isAccruing, at = now)
+    }
+
+    /**
+     * Only used when the event stream is unavailable: the raw per-app
+     * totals from UsageStatsManager. These can include screen-off time,
+     * but a roughly right number beats a blank screen.
+     */
+    private fun fallbackUsage(manager: UsageStatsManager, start: Long, now: Long): Cached {
         val stats = runCatching { manager.queryAndAggregateUsageStats(start, now) }
             .getOrNull()
-            ?: return Aggregate(at = now)
-
+            ?: return Cached(at = now)
         var total = 0L
         val ranked = ArrayList<Pair<String, Long>>()
         for ((pkg, value) in stats) {
             val ms = value.totalTimeInForeground
             if (ms <= 0L) continue
-            if (isNoise(pkg, forTotals = true)) continue
+            if (isNoise(pkg)) continue
             total += ms
             ranked += pkg to ms
         }
@@ -179,99 +214,11 @@ class UsageRepository private constructor(private val context: Context) {
             .sortedByDescending { it.second }
             .take(5)
             .map { (pkg, ms) -> AppUsage(pkg, labelFor(pkg), ms) }
-        return Aggregate(totalMs = total, topApps = top, at = now)
-    }
-
-    private fun queryTimeline(now: Long): Timeline {
-        val manager = usm ?: return Timeline()
-        val start = startOfTodayMs()
-        val events = runCatching { manager.queryEvents(start, now) }.getOrNull()
-            ?: return Timeline()
-        val hourly = FloatArray(24)
-        var unlocks = 0
-        var firstUse = 0L
-        var maxSession = 0L
-        var sessionStart = 0L
-        var lastActive = 0L
-        var lastPkg: String? = null
-        var lastTs = start
-        val event = UsageEvents.Event()
-
-        fun closeInterval(until: Long) {
-            if (lastPkg == null) return
-            if (until > lastTs) addToHours(hourly, lastTs, until)
-            if (sessionStart > 0L) maxSession = maxOf(maxSession, until - sessionStart)
-            lastPkg = null
-            lastTs = until
-        }
-
-        while (events.hasNextEvent()) {
-            events.getNextEvent(event)
-            val ts = event.timeStamp
-            when (event.eventType) {
-                UsageEvents.Event.MOVE_TO_FOREGROUND -> {
-                    val pkg = event.packageName ?: continue
-                    if (lastPkg == null) {
-                        lastPkg = pkg
-                        lastTs = ts
-                        if (firstUse == 0L && !isNoise(pkg, forTotals = true)) firstUse = ts
-                        if (sessionStart == 0L || ts - lastActive > SessionEngine.AWAY_RESET_MS) {
-                            sessionStart = ts
-                        }
-                    } else if (lastPkg != pkg) {
-                        closeInterval(ts)
-                        lastPkg = pkg
-                        lastTs = ts
-                    }
-                    lastActive = ts
-                }
-                UsageEvents.Event.MOVE_TO_BACKGROUND -> {
-                    if (event.packageName == lastPkg) closeInterval(ts)
-                    lastActive = ts
-                }
-                UsageEvents.Event.SCREEN_NON_INTERACTIVE,
-                UsageEvents.Event.KEYGUARD_SHOWN,
-                UsageEvents.Event.DEVICE_SHUTDOWN -> {
-                    closeInterval(ts)
-                    lastTs = ts
-                }
-                UsageEvents.Event.SCREEN_INTERACTIVE -> {
-                    lastTs = ts
-                }
-                UsageEvents.Event.KEYGUARD_HIDDEN -> {
-                    unlocks++
-                    lastTs = ts
-                    lastActive = ts
-                }
-            }
-        }
-        if (lastPkg != null) {
-            if (now > lastTs) addToHours(hourly, lastTs, now)
-            if (sessionStart > 0L) maxSession = maxOf(maxSession, now - sessionStart)
-        }
-        return Timeline(
-            hourly = hourly.toList(),
-            unlocks = unlocks,
-            firstUseMs = firstUse,
-            maxSessionMs = maxSession,
-            lastActivityAt = lastActive,
-            activeNow = lastPkg != null
+        return Cached(
+            data = UsageData(todayMs = total, topApps = top),
+            accruingNow = false,
+            at = now
         )
-    }
-
-    private fun addToHours(hourly: FloatArray, from: Long, to: Long) {
-        if (to <= from) return
-        var cursor = from
-        var guard = 0
-        while (cursor < to && guard < 48) {
-            guard++
-            val zoned = Instant.ofEpochMilli(cursor).atZone(ZoneId.systemDefault())
-            val nextHour = zoned.withMinute(0).withSecond(0).withNano(0).plusHours(1)
-                .toInstant().toEpochMilli()
-            val end = minOf(to, nextHour)
-            hourly[zoned.hour] += (end - cursor) / 60_000f
-            cursor = end
-        }
     }
 
     private fun labelFor(pkg: String): String {
@@ -284,7 +231,8 @@ class UsageRepository private constructor(private val context: Context) {
         return label
     }
 
-    private fun isNoise(pkg: String, forTotals: Boolean): Boolean {
+    /** System chrome and home screens: never listed as an app "you used". */
+    private fun isNoise(pkg: String): Boolean {
         if (!excludedComputed) {
             val set = HashSet<String>()
             set += "com.android.systemui"
@@ -298,9 +246,7 @@ class UsageRepository private constructor(private val context: Context) {
             excluded = set
             excludedComputed = true
         }
-        if (pkg in excluded) return true
-        // The monitor still counts our own app as "in use": the user is looking at it.
-        return forTotals && pkg == context.packageName
+        return pkg in excluded
     }
 }
 
