@@ -12,8 +12,8 @@ android {
         applicationId = "online.justsimpleapps.screentime"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 3
+        versionName = "1.1.1"
     }
 
     buildTypes {
@@ -55,4 +55,6 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+
+    testImplementation("junit:junit:4.13.2")
 }
