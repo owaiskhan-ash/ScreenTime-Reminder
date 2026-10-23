@@ -7,13 +7,16 @@ source = Image.open(root/'docs/st-logo-transparent.png').convert('RGB')
 patches = {'leather': (240, 235, 430, 355), 'felt': (100, 100, 230, 230), 'suede': (800, 755, 870, 825)}
 for name, box in patches.items():
     patch = source.crop(box).convert('L')
-    patch = ImageOps.autocontrast(patch, cutoff=2)
-    patch = ImageEnhance.Contrast(patch).enhance(.68)
-    # Mirrored edges make the repeat continuous without blurred leather grain.
-    w,h=patch.size
-    tile=Image.new('L',(w*2,h*2))
-    tile.paste(patch,(0,0));tile.paste(ImageOps.mirror(patch),(w,0))
-    tile.paste(ImageOps.flip(tile.crop((0,0,w*2,h))),(0,h))
+    import numpy as np
+    from scipy.ndimage import gaussian_filter
+    values = np.asarray(patch, dtype=float)
+    # Remove baked-in lighting before tinting: retain grain, not mirrored motifs.
+    detail = values - gaussian_filter(values, sigma=5)
+    h,w=detail.shape
+    y,x=np.mgrid[:h,:w]
+    fade=np.minimum.reduce([x/8, (w-1-x)/8, y/8, (h-1-y)/8, np.ones_like(x)]).clip(0,1)
+    detail=detail*fade
+    tile=Image.fromarray(np.uint8(np.clip(128+detail*1.4,0,255)))
     tile=tile.resize((384,384),Image.Resampling.LANCZOS)
     for folder in [root/'app/src/main/res/drawable-nodpi',root/'preview/textures']:
         folder.mkdir(parents=True,exist_ok=True)

@@ -24,3 +24,5 @@ h1,h2,.content-title,.ov-title {font-family:Georgia,serif; font-weight:400;}
 .phone[data-theme="dark"] .rhythm .bar.has {background:#45d5de59;}
 .rhythm .bar.now {background:#D0FF00;}
 @media(max-width:600px) { .page {padding:0;} .stage {height:calc(100dvh - 28px); min-height:0;} .phone {width:100%; border-radius:0;} body::after {font-size:9px;} }
+@media(min-width:601px) { .phone {width:390px !important; max-width:390px; flex:0 0 390px;} }
+.hero {background-image:linear-gradient(130deg,#ffffff17,transparent,#00000038),linear-gradient(#06414377,#06414377),url('textures/texture_leather.png');background-size:auto,auto,128px 128px;background-blend-mode:normal,normal,soft-light;background-color:#064143;}
