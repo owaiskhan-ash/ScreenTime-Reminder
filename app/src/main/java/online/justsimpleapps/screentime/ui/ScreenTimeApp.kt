@@ -1,5 +1,7 @@
 package online.justsimpleapps.screentime.ui
 
+import online.justsimpleapps.screentime.ui.theme.textile
+import online.justsimpleapps.screentime.ui.theme.Textile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -111,7 +113,7 @@ fun ScreenTimeApp(
             store.refresh(System.currentTimeMillis(), tickSession = false)
         }
 
-        Box(Modifier.fillMaxSize().background(p.bg)) {
+        Box(Modifier.fillMaxSize().textile(p.bg)) {
             if (!store.onboardingDone) {
                 OnboardingScreen(
                     store = store,
@@ -171,7 +173,7 @@ fun ScreenTimeApp(
 private fun BottomNav(selected: Int, onSelect: (Int) -> Unit) {
     val p = LocalPalette.current
     val items = listOf("TODAY", "WEEK", "SETTINGS")
-    Column(Modifier.fillMaxWidth()) {
+    Column(Modifier.fillMaxWidth().textile(p.subtle, Textile.LEATHER)) {
         Hairline()
         Row(
             Modifier
@@ -199,7 +201,7 @@ private fun BottomNav(selected: Int, onSelect: (Int) -> Unit) {
                         Modifier
                             .size(3.dp)
                             .clip(CircleShape)
-                            .background(if (index == selected) p.fg else Color.Transparent)
+                            .background(if (index == selected) p.lime else Color.Transparent)
                     )
                 }
             }

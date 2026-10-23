@@ -1,5 +1,7 @@
 package online.justsimpleapps.screentime.ui.components
 
+import online.justsimpleapps.screentime.ui.theme.textile
+import online.justsimpleapps.screentime.ui.theme.Textile
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -101,6 +103,7 @@ fun Headline(
         fontSize = size,
         lineHeight = size * 1.1f,
         fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Serif,
         letterSpacing = (-0.6).sp
     )
 }
@@ -171,15 +174,15 @@ fun PrimaryButton(
     val p = LocalPalette.current
     val bg = when {
         !enabled -> if (dark) p.cardMuted.copy(alpha = 0.4f) else p.faint.copy(alpha = 0.5f)
-        else -> if (dark) p.cardFg else p.fg
+        else -> if (dark) Color(0xFFD0FF00) else Color(0xFF00BCC8)
     }
-    val fg = if (dark) p.card else p.bg
+    val fg = Color(0xFF102C2C)
     Box(
         modifier
             .fillMaxWidth()
             .height(52.dp)
-            .clip(RoundedCornerShape(2.dp))
-            .background(bg)
+            .clip(RoundedCornerShape(14.dp))
+            .textile(bg, Textile.LEATHER)
             .clickable(enabled = enabled) { onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -209,8 +212,8 @@ fun GhostButton(
         modifier
             .fillMaxWidth()
             .height(52.dp)
-            .clip(RoundedCornerShape(2.dp))
-            .border(1.dp, line, RoundedCornerShape(2.dp))
+            .clip(RoundedCornerShape(14.dp))
+            .border(1.dp, line, RoundedCornerShape(14.dp))
             .clickable(enabled = enabled) { onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -258,7 +261,7 @@ fun ToggleSwitch(
         modifier
             .size(width = 42.dp, height = 24.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(if (enabled) lerp(p.line, p.fg, t) else p.line.copy(alpha = 0.6f))
+            .background(if (enabled) lerp(p.line, p.accent, t) else p.line.copy(alpha = 0.6f))
             .clickable(enabled = enabled) { onCheckedChange(!checked) }
             .padding(horizontal = 4.dp),
         contentAlignment = Alignment.CenterStart
@@ -380,8 +383,8 @@ fun Segmented(
         modifier
             .fillMaxWidth()
             .height(44.dp)
-            .border(1.dp, p.line, RoundedCornerShape(2.dp))
-            .clip(RoundedCornerShape(2.dp))
+            .border(1.dp, p.line, RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(14.dp))
     ) {
         options.forEachIndexed { index, option ->
             val selected = index == selectedIndex
@@ -389,7 +392,7 @@ fun Segmented(
                 Modifier
                     .weight(1f)
                     .fillMaxHeight()
-                    .background(if (selected) p.fg else Color.Transparent)
+                    .background(if (selected) p.accent else Color.Transparent)
                     .clickable { onSelect(index) },
                 contentAlignment = Alignment.Center
             ) {
@@ -418,7 +421,7 @@ fun ProgressBar(
     progress: Float,
     modifier: Modifier = Modifier,
     track: Color = LocalPalette.current.line,
-    fill: Color = LocalPalette.current.fg
+    fill: Color = LocalPalette.current.accent
 ) {
     Box(modifier.fillMaxWidth().height(2.dp).background(track)) {
         Box(
@@ -471,8 +474,8 @@ fun HourlyChart(
                             .fillMaxHeight(if (fraction < 0.03f) 0.03f else fraction)
                             .background(
                                 when {
-                                    index == highlightHour -> p.fg
-                                    value > 0f -> p.fg.copy(alpha = 0.20f)
+                                    index == highlightHour -> p.lime
+                                    value > 0f -> p.accent.copy(alpha = 0.35f)
                                     else -> p.line
                                 }
                             )
@@ -527,8 +530,8 @@ fun WeeklyChart(points: List<DayPoint>, modifier: Modifier = Modifier) {
                         .fillMaxHeight(if (fraction < 0.02f) 0.02f else fraction * 0.8f)
                         .background(
                             when {
-                                point.isToday -> p.fg
-                                point.tracked -> p.fg.copy(alpha = 0.16f)
+                                point.isToday -> p.accent
+                                point.tracked -> p.accent.copy(alpha = 0.25f)
                                 else -> p.line
                             }
                         )
@@ -652,7 +655,7 @@ fun TopBar(right: String? = null, rightColor: Color? = null) {
                 .padding(horizontal = 22.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AppMark(size = 18.dp)
+            AppMark(size = 18.dp, color = p.accent)
             Spacer(Modifier.width(11.dp))
             Label("SCREEN TIME REMINDER", color = p.fg, size = 10.sp)
             Spacer(Modifier.weight(1f))
@@ -670,7 +673,8 @@ fun AccessNoticeCard(onOpenAccess: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier
             .fillMaxWidth()
-            .border(1.dp, p.line, RoundedCornerShape(3.dp))
+            .clip(RoundedCornerShape(20.dp))
+            .textile(p.subtle, Textile.SUEDE, stitched = true)
             .padding(18.dp)
     ) {
         Label("SCREEN TIME ACCESS NEEDED", color = p.fg, size = 9.sp)
@@ -696,7 +700,8 @@ fun RestrictedSettingsCard(
     Column(
         modifier
             .fillMaxWidth()
-            .border(1.dp, p.line, RoundedCornerShape(3.dp))
+            .clip(RoundedCornerShape(20.dp))
+            .textile(p.subtle, Textile.SUEDE, stitched = true)
             .background(p.subtle)
             .padding(18.dp)
     ) {

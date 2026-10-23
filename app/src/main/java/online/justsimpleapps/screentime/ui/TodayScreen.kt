@@ -1,5 +1,7 @@
 package online.justsimpleapps.screentime.ui
 
+import online.justsimpleapps.screentime.ui.theme.textile
+import online.justsimpleapps.screentime.ui.theme.Textile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -221,8 +223,8 @@ private fun HeroCard(
     Column(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(3.dp))
-            .background(p.card)
+            .clip(RoundedCornerShape(22.dp))
+            .textile(p.card, Textile.LEATHER, stitched = true)
             .padding(22.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -231,7 +233,7 @@ private fun HeroCard(
                 color = p.cardMuted
             )
             Spacer(Modifier.weight(1f))
-            Box(Modifier.size(5.dp).clip(CircleShape).background(p.cardFg))
+            Box(Modifier.size(5.dp).clip(CircleShape).background(androidx.compose.ui.graphics.Color(0xFFD0FF00)))
             Spacer(Modifier.width(6.dp))
             Label(
                 if (snapshot.limitedMode) "LIMITED" else "LIVE",
@@ -276,7 +278,7 @@ private fun HeroCard(
             }
         }
         Spacer(Modifier.height(20.dp))
-        ProgressBar(progress = progress, track = p.cardLine, fill = p.cardFg)
+        ProgressBar(progress = progress, track = p.cardLine, fill = androidx.compose.ui.graphics.Color(0xFF00BCC8))
         Spacer(Modifier.height(9.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Label(progressLabel, color = p.cardMuted, size = 8.5.sp)
@@ -334,7 +336,7 @@ private fun TopAppRow(rank: Int, name: String, duration: String, fraction: Float
     val p = LocalPalette.current
     Column(Modifier.fillMaxWidth().padding(vertical = 13.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Mono(rank.toString().padStart(2, '0'), size = 9.5.sp, color = p.faint)
+            Mono(rank.toString().padStart(2, '0'), size = 9.5.sp, color = p.accent)
             Spacer(Modifier.width(14.dp))
             Text(
                 text = name,
@@ -366,7 +368,8 @@ private fun BreakCard(breakDue: Boolean, breaksToday: Int, onOpenBreak: () -> Un
     Column(
         Modifier
             .fillMaxWidth()
-            .border(1.dp, p.line, RoundedCornerShape(3.dp))
+            .clip(RoundedCornerShape(22.dp))
+            .textile(p.subtle, Textile.SUEDE, stitched = true)
             .padding(20.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {

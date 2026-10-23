@@ -1,5 +1,7 @@
 package online.justsimpleapps.screentime.ui
 
+import online.justsimpleapps.screentime.ui.theme.textile
+import online.justsimpleapps.screentime.ui.theme.Textile
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -82,7 +84,7 @@ fun BreakOverlay(
     Column(
         Modifier
             .fillMaxSize()
-            .background(p.bg)
+            .textile(p.bg, Textile.SUEDE)
             .windowInsetsPadding(WindowInsets.safeDrawing)
             .verticalScroll(rememberScrollState())
     ) {
@@ -181,16 +183,16 @@ fun BreakOverlay(
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(3.dp))
-                    .background(p.fg)
+                    .clip(RoundedCornerShape(20.dp))
+                    .textile(p.card, Textile.LEATHER, stitched = true)
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Mono("20·20·20", size = 14.sp, color = p.bg)
+                Mono("20·20·20", size = 14.sp, color = p.cardFg)
                 Spacer(Modifier.width(16.dp))
                 Body(
                     "Every 20 minutes, look 20 feet away for 20 seconds.",
-                    color = p.bg.copy(alpha = 0.72f),
+                    color = p.cardMuted,
                     size = 11.sp,
                     lineHeight = 16.sp
                 )
