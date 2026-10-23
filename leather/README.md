@@ -5,6 +5,10 @@ A leather-and-suede take on the app, carrying the JUST APPS material system
 product itself. It is a working prototype, not a screenshot: every screen,
 switch, reminder and the break timer behave like the Android app.
 
+![Leather Dark on desktop](preview-desktop.png)
+
+<img src="preview-mobile.png" width="260" alt="Leather Dark on a phone" />
+
 Open `index.html` (or the workspace live preview) and use the list on the left
 to move between **Today**, **Seven days**, **Settings**, the **break nudge** and
 the **first run** screen. The sun button in the header switches between
