@@ -4,7 +4,7 @@ from PIL import Image, ImageOps, ImageEnhance, ImageFilter
 root = Path(__file__).resolve().parents[1]
 source = Image.open(root/'docs/st-logo-transparent.png').convert('RGB')
 # Clean patches: no lettering, seams, or cut edges.
-patches = {'leather': (240, 235, 430, 355), 'felt': (100, 100, 230, 230), 'suede': (800, 755, 870, 825)}
+patches = {'leather': (490, 245, 710, 345), 'felt': (100, 100, 230, 230), 'suede': (800, 755, 870, 825)}
 for name, box in patches.items():
     patch = source.crop(box).convert('L')
     import numpy as np
