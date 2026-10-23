@@ -5,7 +5,7 @@
 (() => {
   "use strict";
 
-  const KEY = "justsimpleapps.screentime.preview.v2";
+  const KEY = "justsimpleapps.screentime.materials.v1";
   const DEMO_HOUR = 20;
   const DEMO_CLOCK = "8:42";
   const BREAK_SECONDS = 5 * 60;
@@ -35,7 +35,7 @@
     repeat: true,
     vibrate: true,
     background: true,
-    theme: "light",
+    theme: "dark",
     overlay: null,
     breakPhase: "idle",
     breakRemaining: BREAK_SECONDS,
@@ -87,7 +87,7 @@
   const shortDay = (date) =>
     date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase();
 
-  const MARK = `<svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 12V6.6M12 12l3.8 2.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>`;
+  const MARK = `<img class="mark" src="icon.png" alt="ST logo" />`;
   const CHEV = `<svg class="set-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M4.4 2.4L8 6l-3.6 3.6" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`;
 
   // ---------- persistence ----------
