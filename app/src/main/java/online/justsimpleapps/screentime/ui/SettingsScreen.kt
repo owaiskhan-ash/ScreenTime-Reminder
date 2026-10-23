@@ -236,7 +236,7 @@ fun SettingsScreen(
                     }
                 )
                 Spacer(Modifier.height(10.dp))
-                Body("Pure Light, Deep Dark, or follow the phone.", size = 11.sp)
+                Body("Sand felt, charcoal felt, or follow the phone.", size = 11.sp)
 
                 Spacer(Modifier.height(28.dp))
                 SectionLabel("TEST & DATA")
