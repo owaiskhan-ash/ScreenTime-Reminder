@@ -10,6 +10,8 @@ import online.justsimpleapps.screentime.R
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -161,7 +163,7 @@ fun PrimaryButton(
     val p = LocalPalette.current
     val bg = when {
         !enabled -> if (dark) p.cardMuted.copy(alpha = 0.4f) else p.faint.copy(alpha = 0.5f)
-        else -> if (dark) Color(0xFFD0FF00) else Color(0xFF00BCC8)
+        else -> if (dark) Color(0xFF03B1C2) else Color(0xFF03B1C2)
     }
     val fg = Color(0xFF102C2C)
     Box(
@@ -246,21 +248,32 @@ fun ToggleSwitch(
     )
     Box(
         modifier
-            .size(width = 42.dp, height = 24.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(if (enabled) lerp(p.line, p.accent, t) else p.line.copy(alpha = 0.6f))
-            .clickable(enabled = enabled) { onCheckedChange(!checked) }
-            .padding(horizontal = 4.dp),
-        contentAlignment = Alignment.CenterStart
+            .size(48.dp)
+            .toggleable(
+                value = checked,
+                enabled = enabled,
+                role = Role.Switch,
+                onValueChange = onCheckedChange
+            ),
+        contentAlignment = Alignment.Center
     ) {
         Box(
             Modifier
-                .offset(x = (18f * t).dp)
-                .size(16.dp)
-                .clip(CircleShape)
-                .background(p.bg)
-                .border(1.dp, lerp(p.muted.copy(alpha = 0.45f), p.bg, t), CircleShape)
-        )
+                .size(width = 44.dp, height = 26.dp)
+                .clip(RoundedCornerShape(13.dp))
+                .background(if (enabled) lerp(p.line, p.accent, t) else p.line.copy(alpha = 0.6f))
+                .padding(3.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Box(
+                Modifier
+                    .offset(x = (18f * t).dp)
+                    .size(20.dp)
+                    .clip(CircleShape)
+                    .background(if (enabled) Color(0xFFF7F2E8) else p.muted)
+                    .border(1.dp, Color.Black.copy(alpha = 0.12f), CircleShape)
+            )
+        }
     }
 }
 
@@ -385,7 +398,7 @@ fun Segmented(
             ) {
                 Text(
                     text = option.uppercase(),
-                    color = if (selected) p.bg else p.muted,
+                    color = if (selected) Color(0xFF102C2C) else p.muted,
                     fontSize = 9.5.sp,
                     fontWeight = FontWeight.Medium,
                     letterSpacing = 1.2.sp,

@@ -233,7 +233,7 @@ private fun HeroCard(
                 color = p.cardMuted
             )
             Spacer(Modifier.weight(1f))
-            Box(Modifier.size(5.dp).clip(CircleShape).background(androidx.compose.ui.graphics.Color(0xFFD0FF00)))
+            Box(Modifier.size(5.dp).clip(CircleShape).background(androidx.compose.ui.graphics.Color(0xFF03B1C2)))
             Spacer(Modifier.width(6.dp))
             Label(
                 if (snapshot.limitedMode) "LIMITED" else "LIVE",
@@ -278,7 +278,7 @@ private fun HeroCard(
             }
         }
         Spacer(Modifier.height(20.dp))
-        ProgressBar(progress = progress, track = p.cardLine, fill = androidx.compose.ui.graphics.Color(0xFF00BCC8))
+        ProgressBar(progress = progress, track = p.cardLine, fill = p.cardFg)
         Spacer(Modifier.height(9.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Label(progressLabel, color = p.cardMuted, size = 8.5.sp)

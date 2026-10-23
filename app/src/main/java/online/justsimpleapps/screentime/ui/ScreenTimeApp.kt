@@ -113,7 +113,7 @@ fun ScreenTimeApp(
             store.refresh(System.currentTimeMillis(), tickSession = false)
         }
 
-        Box(Modifier.fillMaxSize().textile(p.bg)) {
+        Box(Modifier.fillMaxSize().textile(p.bg, Textile.LEATHER)) {
             if (!store.onboardingDone) {
                 OnboardingScreen(
                     store = store,
@@ -173,7 +173,7 @@ fun ScreenTimeApp(
 private fun BottomNav(selected: Int, onSelect: (Int) -> Unit) {
     val p = LocalPalette.current
     val items = listOf("TODAY", "WEEK", "SETTINGS")
-    Column(Modifier.fillMaxWidth().textile(p.subtle, Textile.LEATHER)) {
+    Column(Modifier.fillMaxWidth().textile(p.subtle, Textile.FELT)) {
         Hairline()
         Row(
             Modifier

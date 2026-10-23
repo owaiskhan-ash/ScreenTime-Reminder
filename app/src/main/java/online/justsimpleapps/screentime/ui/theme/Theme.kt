@@ -32,23 +32,25 @@ data class Palette(
     val isDark: Boolean
 )
 
+val IconBlue = Color(0xFF03B1C2)
+
 /** Warm felt with a teal leather card in either appearance. */
 val LightPalette = Palette(
     bg = Color(0xFFF0E3CC), fg = Color(0xFF272D27),
     muted = Color(0xFF625B4E), faint = Color(0xFF756B5B),
     line = Color(0x302D352D), subtle = Color(0xFFE1D0B3),
-    card = Color(0xFF064B4D), cardFg = Color(0xFFF7F2E8),
-    cardMuted = Color(0xFFBDD3CC), cardLine = Color(0x40F7F2E8),
-    accent = Color(0xFF006970), lime = Color(0xFF647900), isDark = false
+    card = IconBlue, cardFg = Color(0xFF102C2C),
+    cardMuted = Color(0xFF173D40), cardLine = Color(0x40102C2C),
+    accent = IconBlue, lime = IconBlue, isDark = false
 )
 
 val DarkPalette = Palette(
     bg = Color(0xFF171B19), fg = Color(0xFFF7F2E8),
     muted = Color(0xFFBEB7A8), faint = Color(0xFF9D9688),
     line = Color(0x30F7F2E8), subtle = Color(0xFF282F29),
-    card = Color(0xFF064143), cardFg = Color(0xFFF7F2E8),
-    cardMuted = Color(0xFFB4CEC6), cardLine = Color(0x40F7F2E8),
-    accent = Color(0xFF45D5DE), lime = Color(0xFFD0FF00), isDark = true
+    card = IconBlue, cardFg = Color(0xFF102C2C),
+    cardMuted = Color(0xFF173D40), cardLine = Color(0x40102C2C),
+    accent = IconBlue, lime = IconBlue, isDark = true
 )
 
 val LocalPalette = staticCompositionLocalOf { LightPalette }

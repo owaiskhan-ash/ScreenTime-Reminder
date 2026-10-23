@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Optional versioned release tag (for example v1.2.2)'
+        description: 'Optional versioned release tag (for example v1.2.3)'
         required: false
         type: string
   push:
@@ -121,20 +121,20 @@ jobs:
           make_latest: true
 
       - name: Publish versioned release (tag or manual)
-        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && startsWith(inputs.release_tag, 'v')) || (github.ref == 'refs/heads/arena/426b1b67-screentime-reminder' && contains(github.event.head_commit.message, '[release v1.2.2]'))
+        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && startsWith(inputs.release_tag, 'v')) || (github.ref == 'refs/heads/arena/426b1b67-screentime-reminder' && contains(github.event.head_commit.message, '[release v1.2.3]'))
         uses: softprops/action-gh-release@v2
         with:
           files: |
             ScreenTimeReminder.apk
             docs/icon.png
             docs/st-logo-transparent.png
-          tag_name: ${{ inputs.release_tag || (startsWith(github.ref, 'refs/tags/v') && github.ref_name) || 'v1.2.2' }}
+          tag_name: ${{ inputs.release_tag || (startsWith(github.ref, 'refs/tags/v') && github.ref_name) || 'v1.2.3' }}
           target_commitish: ${{ github.sha }}
-          name: Screen Time Reminder ${{ inputs.release_tag || (startsWith(github.ref, 'refs/tags/v') && github.ref_name) || 'v1.2.2' }} — Material Texture Fix
+          name: Screen Time Reminder ${{ inputs.release_tag || (startsWith(github.ref, 'refs/tags/v') && github.ref_name) || 'v1.2.3' }} — Blue Cards & Dark Stitching
           body: |
-            Replaced procedural dot/line grain with embedded leather, felt and suede
-            texture samples from the approved ST artwork. Density-consistent texture
-            scale, recessed stitching and restrained directional lighting.
+            Icon-matched blue-teal (#03B1C2) cards, chart bars and active controls.
+            Smooth logo-inspired panels without repeating grain, with dark teal stitching.
+            Better toggle alignment, ivory thumb and accessible native switch semantics.
             ST header, launcher and splash logo retained. Tracking logic unchanged.
 
             Download ScreenTimeReminder.apk below (Android 8.0+).
