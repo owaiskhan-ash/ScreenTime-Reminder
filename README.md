@@ -16,6 +16,15 @@ Free · No ads · No tracking · No account
 
 <img src="docs/today.png" width="24%" alt="Today screen" /> <img src="docs/week.png" width="24%" alt="Seven-day history" /> <img src="docs/settings.png" width="24%" alt="Settings" /> <img src="docs/break.png" width="24%" alt="Break screen" />
 
+## A second look: Leather Dark
+
+[`leather/`](leather/) is an alternative UI direction for the app, carrying the
+JUST APPS material system — deep teal leather, sand suede, rust, olive, a
+restrained lime accent — into the product itself. It is a working browser
+prototype (open `leather/index.html`) with the same logic as `preview/`: live
+counter, session engine, break timer, seven-day history, locally saved settings,
+plus a light "paper" variant behind the sun button.
+
 ## What it does
 
 - **Live screen time.** Counts only while the screen is actually on and unlocked — the same numbers Android's Digital Wellbeing shows — and updates every second while the app is open. Background playback with the screen off (YouTube audio, music, downloads) is never counted.
