@@ -4,6 +4,9 @@ import online.justsimpleapps.screentime.ui.theme.textile
 import online.justsimpleapps.screentime.ui.theme.Textile
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import online.justsimpleapps.screentime.R
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -140,27 +143,11 @@ fun Hairline(modifier: Modifier = Modifier, color: Color = LocalPalette.current.
 
 @Composable
 fun AppMark(modifier: Modifier = Modifier, size: Dp = 22.dp, color: Color = LocalPalette.current.fg) {
-    Canvas(modifier.size(size)) {
-        val stroke = this.size.minDimension * 0.09f
-        val radius = this.size.minDimension * 0.42f
-        val c = Offset(this.size.width / 2f, this.size.height / 2f)
-        drawCircle(color, radius = radius, center = c, style = Stroke(width = stroke))
-        drawLine(
-            color,
-            start = c,
-            end = Offset(c.x, c.y - radius * 0.62f),
-            strokeWidth = stroke,
-            cap = StrokeCap.Round
-        )
-        drawLine(
-            color,
-            start = c,
-            end = Offset(c.x + radius * 0.46f, c.y + radius * 0.34f),
-            strokeWidth = stroke,
-            cap = StrokeCap.Round
-        )
-        drawCircle(color, radius = stroke * 0.9f, center = c)
-    }
+    Image(
+        painter = painterResource(R.drawable.st_logo),
+        contentDescription = "Screen Time Reminder ST logo",
+        modifier = modifier.size(size)
+    )
 }
 
 @Composable
@@ -655,7 +642,7 @@ fun TopBar(right: String? = null, rightColor: Color? = null) {
                 .padding(horizontal = 22.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AppMark(size = 18.dp, color = p.accent)
+            AppMark(size = 32.dp)
             Spacer(Modifier.width(11.dp))
             Label("SCREEN TIME REMINDER", color = p.fg, size = 10.sp)
             Spacer(Modifier.weight(1f))
