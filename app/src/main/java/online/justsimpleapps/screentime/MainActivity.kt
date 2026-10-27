@@ -15,6 +15,7 @@ import online.justsimpleapps.screentime.data.ScreenTimeStore
 import online.justsimpleapps.screentime.notifications.Notifiers
 import online.justsimpleapps.screentime.service.Monitor
 import online.justsimpleapps.screentime.ui.ScreenTimeApp
+import online.justsimpleapps.screentime.widget.ScreenTimeWidgetProvider
 import online.justsimpleapps.screentime.util.openAppInfo
 import online.justsimpleapps.screentime.util.openNotificationSettings
 import online.justsimpleapps.screentime.util.openUsageAccessSettings
@@ -57,6 +58,8 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         store.refresh()
         Monitor.sync(this)
+        // The repository cache is warm after refresh(), so this is cheap.
+        ScreenTimeWidgetProvider.update(applicationContext, force = true)
     }
 
     private fun handleIntent(intent: Intent?) {
