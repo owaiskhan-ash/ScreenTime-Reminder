@@ -12,8 +12,8 @@ android {
         applicationId = "online.justsimpleapps.screentime"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "1.2.0"
+        versionCode = 8
+        versionName = "1.2.4"
     }
 
     buildTypes {
