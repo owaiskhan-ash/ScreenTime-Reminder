@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: 'Optional versioned release tag (for example v1.2.5)'
+        description: 'Optional versioned release tag (for example v1.2.6)'
         required: false
         type: string
   push:
@@ -132,9 +132,9 @@ jobs:
           target_commitish: ${{ github.sha }}
           name: Screen Time Reminder ${{ inputs.release_tag || github.ref_name }} — Home-Screen Widget
           body: |
-            This release ships the minimal white **2x1 home-screen widget** — an eye icon,
-            today's screen time in hours and minutes, and the app you use most in tiny type,
-            on a 95% transparent background — together with the ST monogram launcher icon,
+            This release ships the minimal white **2x1 home-screen widget** — just an eye icon
+            and today's screen time in hours and minutes, with no background and no outline,
+            so the wallpaper is the only surface — together with the ST monogram launcher icon,
             splash logo and refreshed card design. All tracking logic is unchanged and stays
             fully on-device.
 

@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.view.View
 import android.widget.RemoteViews
 import online.justsimpleapps.screentime.MainActivity
 import online.justsimpleapps.screentime.R
@@ -14,10 +13,9 @@ import online.justsimpleapps.screentime.data.UsageRepository
 import online.justsimpleapps.screentime.util.hasUsageAccess
 
 /**
- * The small 2x1 home-screen widget: a white eye, today's screen time in
- * hours and minutes, and — underneath in tiny type — the app used most
- * today. White on a 95% transparent background, so the wallpaper stays
- * the star. Tapping it opens the app.
+ * The small 2x1 home-screen widget: a white eye and today's screen time
+ * in hours and minutes, and nothing else — no background, no outline,
+ * so the wallpaper is the only surface. Tapping it opens the app.
  *
  * The numbers come from the same [UsageRepository] event stream as the
  * rest of the app, so the widget always agrees with the Today screen.
@@ -73,7 +71,6 @@ class ScreenTimeWidgetProvider : AppWidgetProvider() {
             // Always explicit hours and minutes: "0h 0m", "2h 14m".
             val totalMinutes = (data?.todayMs ?: 0L).coerceAtLeast(0L) / 60_000L
             val time = "${totalMinutes / 60L}h ${totalMinutes % 60L}m"
-            val topApp = data?.topApps?.firstOrNull()?.label?.takeIf { it.isNotBlank() }
 
             val openApp = PendingIntent.getActivity(
                 context,
@@ -85,12 +82,6 @@ class ScreenTimeWidgetProvider : AppWidgetProvider() {
             for (id in ids) {
                 val views = RemoteViews(context.packageName, R.layout.widget_screen_time)
                 views.setTextViewText(R.id.widget_time, time)
-                if (topApp == null) {
-                    views.setViewVisibility(R.id.widget_top_app, View.GONE)
-                } else {
-                    views.setViewVisibility(R.id.widget_top_app, View.VISIBLE)
-                    views.setTextViewText(R.id.widget_top_app, topApp)
-                }
                 views.setOnClickPendingIntent(R.id.widget_root, openApp)
                 manager.updateAppWidget(id, views)
             }

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Small 2x1 home-screen widget: eye, today's hours/minutes, most-used app. -->
+<!-- Small 2x1 home-screen widget: just the eye and today's time.
+     No background, no outline — the wallpaper is the only surface. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:background="@drawable/widget_background"
     android:paddingHorizontal="10dp"
     android:paddingVertical="6dp">
 
@@ -17,40 +17,18 @@
         android:src="@drawable/ic_widget_eye"
         android:contentDescription="@string/widget_eye_cd" />
 
-    <LinearLayout
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/widget_time"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_marginStart="8dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/widget_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0h 0m"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:includeFontPadding="false"
-            android:shadowColor="#66000000"
-            android:shadowRadius="2"
-            android:shadowDy="1" />
-
-        <TextView
-            android:id="@+id/widget_top_app"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:textColor="#CCFFFFFF"
-            android:textSize="9sp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:includeFontPadding="false"
-            android:visibility="gone"
-            android:shadowColor="#55000000"
-            android:shadowRadius="1.5"
-            android:shadowDy="1" />
-    </LinearLayout>
+        android:text="0h 0m"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:includeFontPadding="false"
+        android:shadowColor="#66000000"
+        android:shadowRadius="2"
+        android:shadowDy="1" />
 </LinearLayout>

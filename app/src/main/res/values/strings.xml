@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Screen Time Reminder</string>
     <string name="widget_label">Screen Time</string>
-    <string name="widget_description">Today\'s screen time in a tiny 2x1 widget, with the app you used most.</string>
+    <string name="widget_description">Today\'s screen time in a tiny 2x1 widget — just an eye and the hours and minutes.</string>
     <string name="widget_eye_cd">Screen time</string>
 </resources>
