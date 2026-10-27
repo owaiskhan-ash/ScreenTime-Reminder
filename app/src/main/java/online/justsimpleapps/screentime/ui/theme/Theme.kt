@@ -27,37 +27,30 @@ data class Palette(
     val cardFg: Color,
     val cardMuted: Color,
     val cardLine: Color,
+    val accent: Color,
+    val lime: Color,
     val isDark: Boolean
 )
 
-/** Pure Light: white paper, black ink, one hairline. */
+val IconBlue = Color(0xFF03B1C2)
+
+/** Warm felt with a teal leather card in either appearance. */
 val LightPalette = Palette(
-    bg = Color(0xFFFFFFFF),
-    fg = Color(0xFF0B0B0C),
-    muted = Color(0xFF6E6E73),
-    faint = Color(0xFF9A9AA0),
-    line = Color(0x1A000000),
-    subtle = Color(0xFFF7F6F3),
-    card = Color(0xFF0B0B0C),
-    cardFg = Color(0xFFFAF9F6),
-    cardMuted = Color(0x99FAF9F6),
-    cardLine = Color(0x29FFFFFF),
-    isDark = false
+    bg = Color(0xFFF0E3CC), fg = Color(0xFF272D27),
+    muted = Color(0xFF625B4E), faint = Color(0xFF756B5B),
+    line = Color(0x302D352D), subtle = Color(0xFFE1D0B3),
+    card = IconBlue, cardFg = Color(0xFF102C2C),
+    cardMuted = Color(0xFF173D40), cardLine = Color(0x40102C2C),
+    accent = IconBlue, lime = IconBlue, isDark = false
 )
 
-/** Deep Dark: the same two materials, swapped. */
 val DarkPalette = Palette(
-    bg = Color(0xFF0B0B0C),
-    fg = Color(0xFFF4F3EF),
-    muted = Color(0xFF9A9AA0),
-    faint = Color(0xFF6E6E73),
-    line = Color(0x24FFFFFF),
-    subtle = Color(0xFF141416),
-    card = Color(0xFFF4F3EF),
-    cardFg = Color(0xFF0B0B0C),
-    cardMuted = Color(0x990B0B0C),
-    cardLine = Color(0x1F000000),
-    isDark = true
+    bg = Color(0xFF171B19), fg = Color(0xFFF7F2E8),
+    muted = Color(0xFFBEB7A8), faint = Color(0xFF9D9688),
+    line = Color(0x30F7F2E8), subtle = Color(0xFF282F29),
+    card = IconBlue, cardFg = Color(0xFF102C2C),
+    cardMuted = Color(0xFF173D40), cardLine = Color(0x40102C2C),
+    accent = IconBlue, lime = IconBlue, isDark = true
 )
 
 val LocalPalette = staticCompositionLocalOf { LightPalette }
@@ -82,7 +75,7 @@ fun ScreenTimeTheme(mode: ThemeMode, content: @Composable () -> Unit) {
     }
     val scheme = if (dark) {
         darkColorScheme(
-            primary = palette.fg,
+            primary = palette.accent,
             onPrimary = palette.bg,
             background = palette.bg,
             onBackground = palette.fg,
@@ -91,7 +84,7 @@ fun ScreenTimeTheme(mode: ThemeMode, content: @Composable () -> Unit) {
         )
     } else {
         lightColorScheme(
-            primary = palette.fg,
+            primary = palette.accent,
             onPrimary = palette.bg,
             background = palette.bg,
             onBackground = palette.fg,

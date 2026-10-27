@@ -1,5 +1,7 @@
 package online.justsimpleapps.screentime.ui
 
+import online.justsimpleapps.screentime.ui.theme.textile
+import online.justsimpleapps.screentime.ui.theme.Textile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -234,7 +236,7 @@ fun SettingsScreen(
                     }
                 )
                 Spacer(Modifier.height(10.dp))
-                Body("Pure Light, Deep Dark, or follow the phone.", size = 11.sp)
+                Body("Sand felt, charcoal felt, or follow the phone.", size = 11.sp)
 
                 Spacer(Modifier.height(28.dp))
                 SectionLabel("TEST & DATA")
@@ -289,12 +291,12 @@ fun SettingsScreen(
 
     if (showReset) {
         Dialog(onDismissRequest = { showReset = false }) {
-            val shape = RoundedCornerShape(3.dp)
+            val shape = RoundedCornerShape(22.dp)
             Column(
                 Modifier
                     .fillMaxWidth()
                     .clip(shape)
-                    .background(p.bg)
+                    .textile(p.bg, Textile.SUEDE, stitched = true)
                     .border(1.dp, p.line, shape)
                     .padding(22.dp)
             ) {
