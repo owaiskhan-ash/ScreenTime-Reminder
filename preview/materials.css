@@ -1,0 +1,78 @@
+/* App-only browser companion. Uses the APK's embedded material tiles at 128px. */
+body { background: #101411; }
+.site-head,.side { display:none; }
+.page { display:block; padding:24px 0; min-height:100dvh; }
+.stage { display:flex; justify-content:center; height:calc(100dvh - 76px); padding:0; }
+body::after { content:'Interactive browser preview · simulated usage · not an Android emulator'; display:block; text-align:center; color:#aaa696; font:10px system-ui; padding:6px; }
+.phone { min-height:0; height:100%; max-height:none; padding:0; border-radius:24px; overflow:hidden; }
+.phone,.phone[data-theme="dark"] {
+ --paper:#171B19; --ink:#F7F2E8; --muted:#BEB7A8; --faint:#9D9688; --line:#f7f2e830; --subtle:#282F29;
+ --inv-bg:#064143; --inv-fg:#F7F2E8; --inv-muted:#B4CEC6; --inv-line:#f7f2e840;
+}
+.phone[data-theme="light"] { --paper:#F0E3CC; --ink:#272D27; --muted:#625B4E; --faint:#756B5B; --subtle:#E1D0B3; --line:#2d352d30; }
+.phone-screen,.overlay { border-radius:0; background:var(--paper); color:var(--ink); }
+h1,h2,.content-title,.ov-title {font-family:Georgia,serif; font-weight:400;}
+.topbar .mark { width:32px; height:32px; object-fit:contain; }
+.hero,.twenty { position:relative; border-radius:22px; background:var(--inv-bg); color:var(--inv-fg); box-shadow:none; }
+.hero-live i,.topbar-right.live i,.bottomnav button.active i { background:#D0FF00; }
+.progress-fill,.limit-fill {background:#00BCC8;}
+.break-card {position:relative; border-radius:22px; padding:22px; background:var(--subtle);}
+.bottomnav { background:var(--subtle); }
+.btn,.segmented {border-radius:14px;}
+.btn.solid,.switch.on {background:#00BCC8;color:#102c2c;}
+.phone[data-theme="dark"] .rhythm .bar.has {background:#45d5de59;}
+.rhythm .bar.now {background:#D0FF00;}
+@media(max-width:600px) { .page {padding:0;} .stage {height:calc(100dvh - 28px); min-height:0;} .phone {width:100%; border-radius:0;} body::after {font-size:9px;} }
+@media(min-width:601px) { .phone {width:390px !important; max-width:390px; flex:0 0 390px;} }
+
+/* Logo-inspired panel construction, without repeating grain. */
+.phone-screen,.overlay {background:var(--paper);background-image:none;}
+.hero,.twenty {
+ background:linear-gradient(135deg,#0b5052,#064143 65%,#05383a);
+ color:#F7F2E8;border:1px solid #64cbd222;
+ box-shadow:inset 0 1px #ffffff14,0 3px 7px #0002;
+}
+.hero::after,.break-card::after {
+ content:'';display:block;position:absolute;inset:9px;
+ border:1px dashed #d8c2a058;border-radius:13px;pointer-events:none;
+}
+.break-card {
+ background:linear-gradient(130deg,var(--subtle),var(--subtle));
+ border:1px solid var(--line);box-shadow:inset 0 1px #ffffff0a;
+}
+.break-card-top {color:#D8C2A0;}
+.phone[data-theme="light"] .break-card-top {color:#62513b;}
+.bottomnav,.segmented {background:var(--subtle);background-image:none;}
+.btn.solid {background:#00BCC8;box-shadow:inset 0 1px #ffffff30,0 2px 3px #0002;}
+
+/* Shared brand colour sampled from the icon's bright leather panel. */
+.phone,.phone[data-theme="dark"],.phone[data-theme="light"] {
+ --icon-blue:#03B1C2; --inv-bg:#03B1C2; --inv-fg:#102C2C;
+ --inv-muted:#173D40; --inv-line:#102c2c40;
+}
+.hero,.twenty {background:var(--icon-blue);color:var(--inv-fg);}
+.hero::after {border-color:#102c2c40;}
+.hero-number,.hero-grid .mono {color:var(--inv-fg);}
+.hero-live i {background:#102C2C;}
+.btn.solid,.switch.on,.segmented button.active {background:var(--icon-blue);color:#102C2C;}
+.topbar-right.live i,.bottomnav button.active i {background:var(--icon-blue);}
+.rhythm .bar.now,.week-col.today .week-bar {background:var(--icon-blue);}
+.rhythm .bar.has,.phone[data-theme="dark"] .rhythm .bar.has,
+.week-bar,.phone[data-theme="dark"] .week-bar {background:#03b1c259;}
+.app-bar i {background:var(--icon-blue);}
+.progress i {background:#102C2C;}
+
+/* Toggle: 44 × 26 track, 20px thumb, equal 3px insets on every edge. */
+.switch {width:44px;height:26px;border-radius:13px;box-sizing:border-box;}
+.switch::after,.phone[data-theme="dark"] .switch::after {
+ top:3px;left:3px;width:20px;height:20px;box-sizing:border-box;
+ background:#F7F2E8;border:1px solid #0000001f;
+ box-shadow:0 1px 2px #0003;
+ transition:transform 180ms ease;
+}
+.switch.on::after {transform:translateX(18px);border-color:#0000001f;}
+.switch:focus-visible {outline:2px solid var(--icon-blue);outline-offset:4px;}
+@media(prefers-reduced-motion:reduce) {.switch,.switch::after {transition:none;}}
+
+/* Dark thread on card seams. */
+.hero::after,.break-card::after {border-color:rgba(16,44,44,.65);}

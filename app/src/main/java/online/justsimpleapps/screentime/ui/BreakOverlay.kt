@@ -1,5 +1,7 @@
 package online.justsimpleapps.screentime.ui
 
+import online.justsimpleapps.screentime.ui.theme.textile
+import online.justsimpleapps.screentime.ui.theme.Textile
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -82,11 +85,11 @@ fun BreakOverlay(
     Column(
         Modifier
             .fillMaxSize()
-            .background(p.bg)
+            .textile(p.bg, Textile.SUEDE)
             .windowInsetsPadding(WindowInsets.safeDrawing)
             .verticalScroll(rememberScrollState())
     ) {
-        Column(Modifier.padding(horizontal = 24.dp)) {
+        Column(Modifier.widthIn(max = 600.dp).fillMaxWidth().align(Alignment.CenterHorizontally).padding(horizontal = 24.dp)) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -181,16 +184,16 @@ fun BreakOverlay(
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(3.dp))
-                    .background(p.fg)
+                    .clip(RoundedCornerShape(20.dp))
+                    .textile(p.card, Textile.LEATHER, stitched = true)
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Mono("20·20·20", size = 14.sp, color = p.bg)
+                Mono("20·20·20", size = 14.sp, color = p.cardFg)
                 Spacer(Modifier.width(16.dp))
                 Body(
                     "Every 20 minutes, look 20 feet away for 20 seconds.",
-                    color = p.bg.copy(alpha = 0.72f),
+                    color = p.cardMuted,
                     size = 11.sp,
                     lineHeight = 16.sp
                 )

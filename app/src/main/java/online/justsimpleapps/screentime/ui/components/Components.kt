@@ -1,10 +1,17 @@
 package online.justsimpleapps.screentime.ui.components
 
+import online.justsimpleapps.screentime.ui.theme.textile
+import online.justsimpleapps.screentime.ui.theme.Textile
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import online.justsimpleapps.screentime.R
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -101,6 +108,7 @@ fun Headline(
         fontSize = size,
         lineHeight = size * 1.1f,
         fontWeight = FontWeight.Medium,
+        fontFamily = FontFamily.Serif,
         letterSpacing = (-0.6).sp
     )
 }
@@ -137,27 +145,11 @@ fun Hairline(modifier: Modifier = Modifier, color: Color = LocalPalette.current.
 
 @Composable
 fun AppMark(modifier: Modifier = Modifier, size: Dp = 22.dp, color: Color = LocalPalette.current.fg) {
-    Canvas(modifier.size(size)) {
-        val stroke = this.size.minDimension * 0.09f
-        val radius = this.size.minDimension * 0.42f
-        val c = Offset(this.size.width / 2f, this.size.height / 2f)
-        drawCircle(color, radius = radius, center = c, style = Stroke(width = stroke))
-        drawLine(
-            color,
-            start = c,
-            end = Offset(c.x, c.y - radius * 0.62f),
-            strokeWidth = stroke,
-            cap = StrokeCap.Round
-        )
-        drawLine(
-            color,
-            start = c,
-            end = Offset(c.x + radius * 0.46f, c.y + radius * 0.34f),
-            strokeWidth = stroke,
-            cap = StrokeCap.Round
-        )
-        drawCircle(color, radius = stroke * 0.9f, center = c)
-    }
+    Image(
+        painter = painterResource(R.drawable.st_logo),
+        contentDescription = "Screen Time Reminder ST logo",
+        modifier = modifier.size(size)
+    )
 }
 
 @Composable
@@ -171,15 +163,15 @@ fun PrimaryButton(
     val p = LocalPalette.current
     val bg = when {
         !enabled -> if (dark) p.cardMuted.copy(alpha = 0.4f) else p.faint.copy(alpha = 0.5f)
-        else -> if (dark) p.cardFg else p.fg
+        else -> if (dark) Color(0xFF03B1C2) else Color(0xFF03B1C2)
     }
-    val fg = if (dark) p.card else p.bg
+    val fg = Color(0xFF102C2C)
     Box(
         modifier
             .fillMaxWidth()
             .height(52.dp)
-            .clip(RoundedCornerShape(2.dp))
-            .background(bg)
+            .clip(RoundedCornerShape(14.dp))
+            .textile(bg, Textile.LEATHER)
             .clickable(enabled = enabled) { onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -209,8 +201,8 @@ fun GhostButton(
         modifier
             .fillMaxWidth()
             .height(52.dp)
-            .clip(RoundedCornerShape(2.dp))
-            .border(1.dp, line, RoundedCornerShape(2.dp))
+            .clip(RoundedCornerShape(14.dp))
+            .border(1.dp, line, RoundedCornerShape(14.dp))
             .clickable(enabled = enabled) { onClick() },
         contentAlignment = Alignment.Center
     ) {
@@ -256,21 +248,32 @@ fun ToggleSwitch(
     )
     Box(
         modifier
-            .size(width = 42.dp, height = 24.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(if (enabled) lerp(p.line, p.fg, t) else p.line.copy(alpha = 0.6f))
-            .clickable(enabled = enabled) { onCheckedChange(!checked) }
-            .padding(horizontal = 4.dp),
-        contentAlignment = Alignment.CenterStart
+            .size(48.dp)
+            .toggleable(
+                value = checked,
+                enabled = enabled,
+                role = Role.Switch,
+                onValueChange = onCheckedChange
+            ),
+        contentAlignment = Alignment.Center
     ) {
         Box(
             Modifier
-                .offset(x = (18f * t).dp)
-                .size(16.dp)
-                .clip(CircleShape)
-                .background(p.bg)
-                .border(1.dp, lerp(p.muted.copy(alpha = 0.45f), p.bg, t), CircleShape)
-        )
+                .size(width = 44.dp, height = 26.dp)
+                .clip(RoundedCornerShape(13.dp))
+                .background(if (enabled) lerp(p.line, p.accent, t) else p.line.copy(alpha = 0.6f))
+                .padding(3.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Box(
+                Modifier
+                    .offset(x = (18f * t).dp)
+                    .size(20.dp)
+                    .clip(CircleShape)
+                    .background(if (enabled) Color(0xFFF7F2E8) else p.muted)
+                    .border(1.dp, Color.Black.copy(alpha = 0.12f), CircleShape)
+            )
+        }
     }
 }
 
@@ -380,8 +383,8 @@ fun Segmented(
         modifier
             .fillMaxWidth()
             .height(44.dp)
-            .border(1.dp, p.line, RoundedCornerShape(2.dp))
-            .clip(RoundedCornerShape(2.dp))
+            .border(1.dp, p.line, RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(14.dp))
     ) {
         options.forEachIndexed { index, option ->
             val selected = index == selectedIndex
@@ -389,13 +392,13 @@ fun Segmented(
                 Modifier
                     .weight(1f)
                     .fillMaxHeight()
-                    .background(if (selected) p.fg else Color.Transparent)
+                    .background(if (selected) p.accent else Color.Transparent)
                     .clickable { onSelect(index) },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = option.uppercase(),
-                    color = if (selected) p.bg else p.muted,
+                    color = if (selected) Color(0xFF102C2C) else p.muted,
                     fontSize = 9.5.sp,
                     fontWeight = FontWeight.Medium,
                     letterSpacing = 1.2.sp,
@@ -418,7 +421,7 @@ fun ProgressBar(
     progress: Float,
     modifier: Modifier = Modifier,
     track: Color = LocalPalette.current.line,
-    fill: Color = LocalPalette.current.fg
+    fill: Color = LocalPalette.current.accent
 ) {
     Box(modifier.fillMaxWidth().height(2.dp).background(track)) {
         Box(
@@ -471,8 +474,8 @@ fun HourlyChart(
                             .fillMaxHeight(if (fraction < 0.03f) 0.03f else fraction)
                             .background(
                                 when {
-                                    index == highlightHour -> p.fg
-                                    value > 0f -> p.fg.copy(alpha = 0.20f)
+                                    index == highlightHour -> p.lime
+                                    value > 0f -> p.accent.copy(alpha = 0.35f)
                                     else -> p.line
                                 }
                             )
@@ -527,8 +530,8 @@ fun WeeklyChart(points: List<DayPoint>, modifier: Modifier = Modifier) {
                         .fillMaxHeight(if (fraction < 0.02f) 0.02f else fraction * 0.8f)
                         .background(
                             when {
-                                point.isToday -> p.fg
-                                point.tracked -> p.fg.copy(alpha = 0.16f)
+                                point.isToday -> p.accent
+                                point.tracked -> p.accent.copy(alpha = 0.25f)
                                 else -> p.line
                             }
                         )
@@ -652,7 +655,7 @@ fun TopBar(right: String? = null, rightColor: Color? = null) {
                 .padding(horizontal = 22.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AppMark(size = 18.dp)
+            AppMark(size = 32.dp)
             Spacer(Modifier.width(11.dp))
             Label("SCREEN TIME REMINDER", color = p.fg, size = 10.sp)
             Spacer(Modifier.weight(1f))
@@ -670,7 +673,8 @@ fun AccessNoticeCard(onOpenAccess: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier
             .fillMaxWidth()
-            .border(1.dp, p.line, RoundedCornerShape(3.dp))
+            .clip(RoundedCornerShape(20.dp))
+            .textile(p.subtle, Textile.SUEDE, stitched = true)
             .padding(18.dp)
     ) {
         Label("SCREEN TIME ACCESS NEEDED", color = p.fg, size = 9.sp)
@@ -696,7 +700,8 @@ fun RestrictedSettingsCard(
     Column(
         modifier
             .fillMaxWidth()
-            .border(1.dp, p.line, RoundedCornerShape(3.dp))
+            .clip(RoundedCornerShape(20.dp))
+            .textile(p.subtle, Textile.SUEDE, stitched = true)
             .background(p.subtle)
             .padding(18.dp)
     ) {

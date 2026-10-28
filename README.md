@@ -24,6 +24,7 @@ Free · No ads · No tracking · No account
 - **Daily limit.** A second, firmer reminder when the day's total passes 2h / 3h / 5h / 6h.
 - **Seven-day history.** Daily totals, daily average, lightest day, longest session, breaks taken.
 - **Top apps and hourly rhythm.** Where today went, app by app and hour by hour.
+- **Home-screen widget.** A minimal white 2x1 widget — just an eye and today's hours and minutes, with no background and no outline, so your wallpaper is the only surface. Tapping it opens the app.
 - **A real break timer.** A five-minute dial, 20-20-20 guidance, and a break count.
 - **Pure Light and Deep Dark.** Paper, ink and one hairline — no colour competing with the content.
 
@@ -43,6 +44,7 @@ It reads only *which app was in front and for how long*. Never content, messages
 | `data/ScreenTimeStore.kt` | Settings, today's counters and 30 days of daily history. Compose state, so every screen follows along. |
 | `service/ScreenTimeService.kt` | A low-priority foreground service that checks every 20 seconds and posts reminders in the background. |
 | `notifications/Notifiers.kt` | Break, daily-limit, test and monitor notifications, with a snooze action. |
+| `widget/ScreenTimeWidgetProvider.kt` | The 2x1 home-screen widget. Renders today's screen time — an eye and the hours/minutes, nothing else — into a transparent `RemoteViews` layout; refreshed by the 20-second monitor loop (throttled) and on every 30-minute system widget tick. |
 | `ui/` | Compose screens: onboarding, today, week, settings and the break overlay. |
 
 ## Install

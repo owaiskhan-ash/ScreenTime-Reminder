@@ -1,5 +1,7 @@
 package online.justsimpleapps.screentime.ui
 
+import online.justsimpleapps.screentime.ui.theme.textile
+import online.justsimpleapps.screentime.ui.theme.Textile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
@@ -23,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,7 +63,7 @@ fun ScreenTimeApp(
         val p = LocalPalette.current
         val context = LocalContext.current
         val owner = LocalLifecycleOwner.current
-        var tab by remember { mutableIntStateOf(0) }
+        var tab by rememberSaveable { mutableIntStateOf(0) }
         var showBreak by remember { mutableStateOf(false) }
         var dismissedDue by remember { mutableStateOf(false) }
         val snapshot = store.snapshot
@@ -111,44 +115,49 @@ fun ScreenTimeApp(
             store.refresh(System.currentTimeMillis(), tickSession = false)
         }
 
-        Box(Modifier.fillMaxSize().background(p.bg)) {
-            if (!store.onboardingDone) {
-                OnboardingScreen(
-                    store = store,
-                    onAllowAccess = onOpenAccessSettings,
-                    onOpenAppInfo = onOpenAppInfo,
-                    onDone = {
-                        store.completeOnboarding()
-                        store.refresh()
-                    }
-                )
-            } else {
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .windowInsetsPadding(WindowInsets.safeDrawing)
-                ) {
-                    Box(Modifier.weight(1f)) {
-                        when (tab) {
-                            0 -> TodayScreen(
-                                store = store,
-                                onOpenBreak = { showBreak = true },
-                                onOpenAccessSettings = onOpenAccessSettings,
-                                onOpenAppInfo = onOpenAppInfo
-                            )
-                            1 -> InsightsScreen(store = store)
-                            else -> SettingsScreen(
-                                store = store,
-                                onOpenAccess = onOpenAccessSettings,
-                                onOpenAppInfo = onOpenAppInfo,
-                                onOpenNotifications = onOpenNotificationSettings,
-                                onSendTest = { Notifiers.postTest(context, store.settings) },
-                                onSettingsChanged = { Monitor.sync(context) },
-                                onOpenWebsite = onOpenWebsite
-                            )
+        Box(Modifier.fillMaxSize().textile(p.bg, Textile.LEATHER)) {
+            Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing), contentAlignment = Alignment.TopCenter) {
+                Box(Modifier.widthIn(max = 600.dp).fillMaxSize()) {
+                    if (!store.onboardingDone) {
+                        OnboardingScreen(
+                            store = store,
+                            onAllowAccess = onOpenAccessSettings,
+                            onOpenAppInfo = onOpenAppInfo,
+                            onDone = {
+                                store.completeOnboarding()
+                                store.refresh()
+                            }
+                        )
+                    } else {
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .windowInsetsPadding(WindowInsets.safeDrawing)
+                        ) {
+                            Box(Modifier.weight(1f)) {
+                                when (tab) {
+                                    0 -> TodayScreen(
+                                        store = store,
+                                        onOpenBreak = { showBreak = true },
+                                        onOpenAccessSettings = onOpenAccessSettings,
+                                        onOpenAppInfo = onOpenAppInfo
+                                    )
+                                    1 -> InsightsScreen(store = store)
+                                    else -> SettingsScreen(
+                                        store = store,
+                                        onOpenAccess = onOpenAccessSettings,
+                                        onOpenAppInfo = onOpenAppInfo,
+                                        onOpenNotifications = onOpenNotificationSettings,
+                                        onSendTest = { Notifiers.postTest(context, store.settings) },
+                                        onSettingsChanged = { Monitor.sync(context) },
+                                        onOpenWebsite = onOpenWebsite
+                                    )
+                                }
+                            }
+                            BottomNav(selected = tab, onSelect = { tab = it })
                         }
                     }
-                    BottomNav(selected = tab, onSelect = { tab = it })
+
                 }
             }
 
@@ -171,7 +180,7 @@ fun ScreenTimeApp(
 private fun BottomNav(selected: Int, onSelect: (Int) -> Unit) {
     val p = LocalPalette.current
     val items = listOf("TODAY", "WEEK", "SETTINGS")
-    Column(Modifier.fillMaxWidth()) {
+    Column(Modifier.fillMaxWidth().textile(p.subtle, Textile.FELT)) {
         Hairline()
         Row(
             Modifier
@@ -199,7 +208,7 @@ private fun BottomNav(selected: Int, onSelect: (Int) -> Unit) {
                         Modifier
                             .size(3.dp)
                             .clip(CircleShape)
-                            .background(if (index == selected) p.fg else Color.Transparent)
+                            .background(if (index == selected) p.lime else Color.Transparent)
                     )
                 }
             }

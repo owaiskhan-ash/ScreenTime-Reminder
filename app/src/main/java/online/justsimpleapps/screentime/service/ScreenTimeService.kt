@@ -20,6 +20,7 @@ import online.justsimpleapps.screentime.data.ScreenTimeStore
 import online.justsimpleapps.screentime.data.SessionEngine
 import online.justsimpleapps.screentime.data.UsageRepository
 import online.justsimpleapps.screentime.notifications.Notifiers
+import online.justsimpleapps.screentime.widget.ScreenTimeWidgetProvider
 import online.justsimpleapps.screentime.util.formatHm
 import online.justsimpleapps.screentime.util.hasUsageAccess
 import online.justsimpleapps.screentime.util.minutesToMs
@@ -115,6 +116,10 @@ class ScreenTimeService : Service() {
                 NotificationManagerCompat.from(this).notify(Notifiers.ID_MONITOR, notification)
             }
         }
+
+        // Keep any home-screen widget in step with the same numbers the
+        // notification shows. No-op and self-throttling when none is placed.
+        runCatching { ScreenTimeWidgetProvider.update(this) }
     }
 
     companion object {
